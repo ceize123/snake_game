@@ -1,0 +1,22 @@
+/* #my-video {
+    width: 200px;
+    height: 200px;
+    background-color: #555;
+} */
+
+.handsfree-canvas {
+    width: 50% !important; 
+}
+
+.webcam {
+    display: inline-block;
+}
+
+.dot {
+  height: 5px;
+  width: 5px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  position: absolute;
+}
