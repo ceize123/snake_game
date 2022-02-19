@@ -12,8 +12,8 @@ import {
 } from './Constants';
 
 function handStart(handsfree) {
-    handsfree.enablePlugins('browser')
-    handsfree.start()
+    handsfree.enablePlugins('browser');
+    handsfree.start();
 }
 
 function App() {
@@ -22,13 +22,13 @@ function App() {
     const [gameDis, setGameDis] = useState(false);
     const [playerChoose, setPlayerChoose] = useState(false);
     const [multi, setMulti] = useState(false);
+    const [handChosen, setHandChosen] = useState([-1, -1]);
     const [snake, setSnake] = useState(SNAKE_START);
     const [apple, setApple] = useState(APPLE_START);
     const [dir, setDir] = useState([0, -1]); // going up
     const [speed, setSpeed] = useState(null);
     const [gameOver, setGameOver] = useState(false);
     const [interval, setInterval] = useState(null);
-
     
 
     let coordinate = [];
@@ -61,9 +61,10 @@ function App() {
     }
 
     function handMoveSnake() {
-        handDir = 0;
+        handDir = 2;
         if (!multi) {
             return window.setInterval(function () {
+                
                 if (handsfree.data.hands.pointer[0].isVisible) {
                     coordinate[0] = handsfree.data.hands.pointer[0].x;
                     coordinate[1] = handsfree.data.hands.pointer[0].y;
@@ -96,8 +97,53 @@ function App() {
                     console.log("..");
                 }
     
-            }, SPEED / 2);
+            }, SPEED);
             
+        } else {
+            return window.setInterval(function () {
+                handsfree.data.hands.pointer.forEach((item, idx) => {
+                    console.log(item);
+                    if (item.isVisible) {
+                        let playerScreen = 0;
+                        coordinate[0] = item.x;
+                        coordinate[1] = item.y;
+                        
+                        if (idx === 0 || idx === 1) {
+                            playerScreen = window.screen.width / 4;
+                        } else if (idx === 2 || idx === 3) {
+                            playerScreen = window.screen.width / 4 * 3;
+                        }
+                        console.log(playerScreen);
+                        if (Math.abs(coordinate[0] - playerScreen) >= Math.abs(coordinate[1] - 300)) {
+                                if (coordinate[0] > (playerScreen) && handDir !== 3) {
+                                    setDir(DIRECTIONS[39]);
+                                    handDir = 4;
+                                } else if (coordinate[0] < (playerScreen) && handDir !== 4) {
+                                    setDir(DIRECTIONS[37]);
+                                    handDir = 3;
+                                } else {
+                                    console.log("Not moving");
+                                }
+                                
+                            } else {
+                                if (coordinate[1] > 300 && handDir !== 2) {
+                                    setDir(DIRECTIONS[40])
+                                    handDir = 1;
+                                } else if (coordinate[1] < 300 && handDir !== 1) {
+                                    setDir(DIRECTIONS[38])
+                                    handDir = 2;
+                                } else {
+                                    console.log("Not moving");
+                                }
+                                
+                            }
+                    } else {
+                        console.log("..");
+                    }
+                    
+                });
+
+            }, SPEED)
         }
         // return window.setInterval(function () {
         //     if (handsfree.data.hands.pointer[0].isVisible) {
@@ -289,6 +335,19 @@ function App() {
     }
 
 
+    // const chooseHand = (player, num) => {
+    //     console.log(num);
+    //     console.log(handChosen);
+    //     if (player === "one") {
+    //         setHandChosen([{ "one": num }, { "two": 0 }]);
+    //     } else {
+    //         setHandChosen(prevState => {
+    //             return { ...prevState, "two": num }
+    //         });
+    //     }
+    // }
+
+
     return (
         <>
         {mode && 
@@ -300,10 +359,21 @@ function App() {
             <br />
             {playerChoose &&
                 <>
-                    <button onClick={() => playerNum(1)}>Single Player</button>
-                    <button onClick={() => playerNum(2)}>Two Players</button>
+                <button onClick={() => playerNum(1)}>Single Player</button>
+                <button onClick={() => playerNum(2)}>Two Players</button>
                 </>
             }
+            <br />
+            {/* {multi &&
+                <>
+                Player One    
+                <button onClick={() => chooseHand("one", 0)}>Left</button>
+                <button name="one" onClick={(e) => chooseHand(e, 1)}>Right</button>
+                Player Two
+                <button name="two" onClick={(e) => chooseHand(e, 2)}>Left</button>
+                <button name="two" onClick={(e) => chooseHand(e, 3)}>Right</button>
+                </>    
+            }     */}
             </>
         }
         

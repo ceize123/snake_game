@@ -16,31 +16,38 @@ const WebcamCapture = (prop) => {
         //     left: centerX,
         //     top: centerY
         // })
-        if (isMulti) {
-            let centerX = webcamBlock.current.offsetLeft + (webcamBlock.current.offsetWidth / 4)
-            // Impossible to detect center Y of the webcam in the screen
-            let centerY = webcamBlock.current.offsetTop + (360 * 300 / window.innerHeight) // 360 = webcam height
-            setStyle({
-                left: centerX,
-                top: centerY
-            })
-            let centerX2 = webcamBlock.current.offsetLeft + (webcamBlock.current.offsetWidth / 4 * 3)
-            let centerY2 = webcamBlock.current.offsetTop + (360 * 300 / window.innerHeight) // 360 = webcam height
-            setStyle2({
-                left: centerX2,
-                top: centerY2
-            })
-        } else { // single player
-            let centerX = webcamBlock.current.offsetLeft + (webcamBlock.current.offsetWidth / 2)
-            // Impossible to detect center Y of the webcam in the screen
-            let centerY = webcamBlock.current.offsetTop + (360 * 300 / window.innerHeight) // 360 = webcam height
-            setStyle({
-                left: centerX,
-                top: centerY
-            })
-        }
-        // console.log(isMulti);
-        // console.log(webcamBlock);
+        // console.log(webcamBlock.current.offsetTop);
+        // console.log(2);
+        // console.log(webcamBlock.current.offsetHeight);
+        // console.log(3);
+        // console.log(window.innerHeight);
+        setTimeout(() => {
+            if (isMulti) {
+                let centerX = webcamBlock.current.offsetLeft + (webcamBlock.current.offsetWidth / 4)
+                // Impossible to detect center Y of the webcam in the screen
+                let centerY = webcamBlock.current.offsetTop + (webcamBlock.current.offsetHeight * 300 / window.innerHeight)
+                setStyle({
+                    left: centerX,
+                    top: centerY
+                })
+                let centerX2 = webcamBlock.current.offsetLeft + (webcamBlock.current.offsetWidth / 4 * 3)
+                let centerY2 = webcamBlock.current.offsetTop + (webcamBlock.current.offsetHeight * 300 / window.innerHeight)
+                setStyle2({
+                    left: centerX2,
+                    top: centerY2
+                })
+            } else { // single player
+                let centerX = webcamBlock.current.offsetLeft + (webcamBlock.current.offsetWidth / 2)
+                // Impossible to detect center Y of the webcam in the screen
+                let centerY = webcamBlock.current.offsetTop + (webcamBlock.current.offsetHeight * 300 / window.innerHeight)
+                setStyle({
+                    left: centerX,
+                    top: centerY
+                })
+            }
+        }, 1500)
+            // console.log(isMulti);
+            // console.log(webcamBlock);
         
     }, [isMulti])
     
@@ -52,7 +59,7 @@ const WebcamCapture = (prop) => {
         <Webcam
         audio={false}
         ref={webcamRef}
-        height={360}
+        // height={360}
         width={640}
         mirrored={true}
         />
