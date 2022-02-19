@@ -16,7 +16,23 @@
   height: 5px;
   width: 5px;
   background-color: #bbb;
-  border-radius: 50%;
   display: inline-block;
   position: absolute;
+}
+
+.dot::before,.dot::after{
+    content:'';
+    position:absolute;
+    background-color: #bbb;
+}
+
+div:before{
+    left: -70px;
+    width: 140px;
+    height: 5px;
+}
+div:after{
+    top: -70px;
+    width: 5px;
+    height: 140px;
 }

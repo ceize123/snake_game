@@ -15,8 +15,6 @@ const DIRECTIONS = {
     39: [1, 0] // right
 };
 
-const LEGIT_MOVE = 10;
-
 export {
     CANVAS_SIZE,
     SNAKE_START,
@@ -24,5 +22,4 @@ export {
     SCALE,
     SPEED,
     DIRECTIONS,
-    LEGIT_MOVE
 }

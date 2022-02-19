@@ -9,48 +9,12 @@ import {
     SCALE,
     SPEED,
     DIRECTIONS,
-    LEGIT_MOVE
 } from './Constants';
 
 function handStart(handsfree) {
     handsfree.enablePlugins('browser')
     handsfree.start()
 }
-
-// function intervalTrigger(handsfree, coordinate, x, y) {
-//     return window.setInterval(function () {
-//         if (handsfree.data.hands.pointer[0].isVisible) {
-
-//             coordinate[0] = handsfree.data.hands.pointer[0].x;
-//             coordinate[1] = handsfree.data.hands.pointer[0].y;
-//             // console.log(coordinate);
-//             if (Math.abs(coordinate[0] - x) >= Math.abs(coordinate[1] - y)) {
-//                 if (coordinate[0] - x > LEGIT_MOVE) {
-//                     console.log("Right");
-//                 } else if (coordinate[0] - x < -LEGIT_MOVE) {
-//                     console.log("Left");
-//                 } else {
-//                     console.log("Not moving");
-//                 }
-//             } else {
-//                 if (coordinate[1] - y > LEGIT_MOVE) {
-//                     console.log("Down");
-//                 } else if (coordinate[1] - y < -LEGIT_MOVE) {
-//                     console.log("Up");
-//                 } else {
-//                     console.log("Not moving");
-//                 }
-//             }
-//             x = coordinate[0];
-//             y = coordinate[1];
-            
-//         } else {
-//             console.log("..");
-//         }
-
-//     }, SPEED);
-    
-// }
 
 function App() {
     const canvasRef = useRef(null);
@@ -68,8 +32,8 @@ function App() {
     
 
     let coordinate = [];
-    let x = 0;
-    let y = 0;
+    // let x = 0;
+    // let y = 0;
     let handDir = 0; // Don't know why const [dir, setDir] = useState([0, -1]); is not working in setInterval.
     const handsfree = new Handsfree({
         // showDebug: true,
@@ -79,55 +43,98 @@ function App() {
             maxNumHands: 2,
         },
     })
-    console.log(window.screen.width)
 
     function handDetect() {
         handStart(handsfree);
         setTimeout(() => {
-            if (handsfree.data.hands.pointer[0].isVisible) {
-                console.log("Hand Detected!")
-            }
+            let detectHand = window.setInterval(function () {
+                let detected = false;
+                if (handsfree.data.hands.pointer[0].isVisible) {
+                    console.log("Hand Detected!")
+                    detected = true;
+                }
+
+                if (detected) clearInterval(detectHand);
+            }, 500)
         }, 1500);
+        
     }
 
     function handMoveSnake() {
         handDir = 0;
-        return window.setInterval(function () {
-            if (handsfree.data.hands.pointer[0].isVisible) {
-                coordinate[0] = handsfree.data.hands.pointer[0].x;
-                coordinate[1] = handsfree.data.hands.pointer[0].y;
-                if (Math.abs(coordinate[0] - x) >= Math.abs(coordinate[1] - y)) {
-                    if (coordinate[0] - x > LEGIT_MOVE && handDir !== 3) {
-                        setDir(DIRECTIONS[39]);
-                        handDir = 4;
-                    } else if (coordinate[0] - x < -LEGIT_MOVE && handDir !== 4) {
-                        setDir(DIRECTIONS[37]);
-                        handDir = 3;
+        if (!multi) {
+            return window.setInterval(function () {
+                if (handsfree.data.hands.pointer[0].isVisible) {
+                    coordinate[0] = handsfree.data.hands.pointer[0].x;
+                    coordinate[1] = handsfree.data.hands.pointer[0].y;
+                    
+                    if (Math.abs(coordinate[0] - (window.screen.width / 2)) >= Math.abs(coordinate[1] - 300)) {
+                        if (coordinate[0] > (window.screen.width / 2) && handDir !== 3) {
+                            setDir(DIRECTIONS[39]);
+                            handDir = 4;
+                        } else if (coordinate[0] < (window.screen.width / 2) && handDir !== 4) {
+                            setDir(DIRECTIONS[37]);
+                            handDir = 3;
+                        } else {
+                            console.log("Not moving");
+                        }
+                        
                     } else {
-                        console.log("Not moving");
+                        if (coordinate[1] > 300 && handDir !== 2) {
+                            setDir(DIRECTIONS[40])
+                            handDir = 1;
+                        } else if (coordinate[1] < 300 && handDir !== 1) {
+                            setDir(DIRECTIONS[38])
+                            handDir = 2;
+                        } else {
+                            console.log("Not moving");
+                        }
+                        
                     }
                     
                 } else {
-                    if (coordinate[1] - y > LEGIT_MOVE && handDir !== 2) {
-                        setDir(DIRECTIONS[40])
-                        handDir = 1;
-                    } else if (coordinate[1] - y < -LEGIT_MOVE && handDir !== 1) {
-                        setDir(DIRECTIONS[38])
-                        handDir = 2;
-                    } else {
-                        console.log("Not moving");
-                    }
-                    
+                    console.log("..");
                 }
+    
+            }, SPEED / 2);
+            
+        }
+        // return window.setInterval(function () {
+        //     if (handsfree.data.hands.pointer[0].isVisible) {
+        //         coordinate[0] = handsfree.data.hands.pointer[0].x;
+        //         coordinate[1] = handsfree.data.hands.pointer[0].y;
+        //         if (Math.abs(coordinate[0] - x) >= Math.abs(coordinate[1] - y)) {
+        //             if (coordinate[0] - x > LEGIT_MOVE && handDir !== 3) {
+        //                 setDir(DIRECTIONS[39]);
+        //                 handDir = 4;
+        //             } else if (coordinate[0] - x < -LEGIT_MOVE && handDir !== 4) {
+        //                 setDir(DIRECTIONS[37]);
+        //                 handDir = 3;
+        //             } else {
+        //                 console.log("Not moving");
+        //             }
+                    
+        //         } else {
+        //             if (coordinate[1] - y > LEGIT_MOVE && handDir !== 2) {
+        //                 setDir(DIRECTIONS[40])
+        //                 handDir = 1;
+        //             } else if (coordinate[1] - y < -LEGIT_MOVE && handDir !== 1) {
+        //                 setDir(DIRECTIONS[38])
+        //                 handDir = 2;
+        //             } else {
+        //                 console.log("Not moving");
+        //             }
+                    
+        //         }
 
-                x = coordinate[0];
-                y = coordinate[1];
+        //         x = coordinate[0];
+        //         y = coordinate[1];
                 
-            } else {
-                console.log("..");
-            }
+        //     } else {
+        //         console.log("..");
+        //     }
 
-        }, SPEED);
+        // }, SPEED);
     }
 
     const startGame = () => {
@@ -137,16 +144,28 @@ function App() {
         setGameOver(false);
         // handStart(handsfree);
         setSpeed(SPEED);
+        // setMode(false);
+    }
+
+    const startGameHand = () => {
+        setSnake(SNAKE_START);
+        setApple(APPLE_START);
+        setDir([0, -1]);
+        setGameOver(false);
+        // handStart(handsfree);
+        setSpeed(SPEED);
         setInterval(handMoveSnake);
-        setMode(false);
         
+        // setMode(false);
     }
 
     const endGame = () => {
         setSpeed(null);
         setGameOver(true);
         handsfree.stop();
-        clearInterval(interval);
+        if (interval !== null) {
+            clearInterval(interval);
+        }
         setMode(true);
     }
 
@@ -282,7 +301,7 @@ function App() {
             {playerChoose &&
                 <>
                     <button onClick={() => playerNum(1)}>Single Player</button>
-                    <button onClick={() => playerNum(1)}>Two Players</button>
+                    <button onClick={() => playerNum(2)}>Two Players</button>
                 </>
             }
             </>
@@ -308,8 +327,8 @@ function App() {
                 />
                 {gameOver && <div>GAME OVER!</div>}
                 <button onClick={handDetect}>Hand Detect</button>
-                <button onClick={startGame}>Start Game</button>
-                <WebcamCapture /> 
+                <button onClick={startGameHand}>Start Game</button>
+                <WebcamCapture isMulti={multi}/> 
             </div>
         }    
         </>
