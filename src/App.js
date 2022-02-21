@@ -32,8 +32,6 @@ function App() {
     
 
     let coordinate = [];
-    // let x = 0;
-    // let y = 0;
     let handDir = 0; // Don't know why const [dir, setDir] = useState([0, -1]); is not working in setInterval.
     const handsfree = new Handsfree({
         // showDebug: true,
@@ -42,6 +40,216 @@ function App() {
             // The maximum number of hands to detect [0 - 4]
             maxNumHands: 2,
         },
+    })
+
+    handsfree.useGesture({
+    "name": "vertical",
+    "algorithm": "fingerpose",
+    "models": "hands",
+    "confidence": 6.5,
+    "description": [
+        [
+        "addCurl",
+        "Thumb",
+        "NoCurl",
+        1
+        ],
+        [
+        "addDirection",
+        "Thumb",
+        "VerticalUp",
+        1
+        ],
+        [
+        "addCurl",
+        "Index",
+        "NoCurl",
+        1
+        ],
+        [
+        "addDirection",
+        "Index",
+        "VerticalUp",
+        1
+        ],
+        [
+        "addCurl",
+        "Middle",
+        "NoCurl",
+        1
+        ],
+        [
+        "addDirection",
+        "Middle",
+        "VerticalUp",
+        1
+        ],
+        [
+        "addCurl",
+        "Ring",
+        "NoCurl",
+        1
+        ],
+        [
+        "addDirection",
+        "Ring",
+        "VerticalUp",
+        1
+        ],
+        [
+        "addCurl",
+        "Pinky",
+        "NoCurl",
+        1
+        ],
+        [
+        "addDirection",
+        "Pinky",
+        "VerticalUp",
+        1
+        ],
+        [
+        "addDirection",
+        "Thumb",
+        "VerticalDown",
+        1
+        ],
+        [
+        "addDirection",
+        "Index",
+        "VerticalDown",
+        1
+        ],
+        [
+        "addDirection",
+        "Middle",
+        "VerticalDown",
+        1
+        ],
+        [
+        "addDirection",
+        "Ring",
+        "VerticalDown",
+        1
+        ],
+        [
+        "addDirection",
+        "Pinky",
+        "VerticalDown",
+        1
+        ],
+        [
+        "setWeight",
+        "Index",
+        2
+        ]
+    ],
+    "enabled": true
+    })
+
+    handsfree.useGesture({
+    "name": "horizontal",
+    "algorithm": "fingerpose",
+    "models": "hands",
+    "confidence": 6.5,
+    "description": [
+        [
+        "addCurl",
+        "Thumb",
+        "NoCurl",
+        1
+        ],
+        [
+        "addDirection",
+        "Thumb",
+        "HorizontalLeft",
+        1
+        ],
+        [
+        "addCurl",
+        "Index",
+        "NoCurl",
+        1
+        ],
+        [
+        "addDirection",
+        "Index",
+        "HorizontalLeft",
+        1
+        ],
+        [
+        "addCurl",
+        "Middle",
+        "NoCurl",
+        1
+        ],
+        [
+        "addDirection",
+        "Middle",
+        "HorizontalLeft",
+        1
+        ],
+        [
+        "addCurl",
+        "Ring",
+        "NoCurl",
+        1
+        ],
+        [
+        "addDirection",
+        "Ring",
+        "HorizontalLeft",
+        1
+        ],
+        [
+        "addCurl",
+        "Pinky",
+        "NoCurl",
+        1
+        ],
+        [
+        "addDirection",
+        "Pinky",
+        "HorizontalLeft",
+        1
+        ],
+        [
+        "addDirection",
+        "Thumb",
+        "HorizontalRight",
+        1
+        ],
+        [
+        "addDirection",
+        "Index",
+        "HorizontalRight",
+        1
+        ],
+        [
+        "addDirection",
+        "Middle",
+        "HorizontalRight",
+        1
+        ],
+        [
+        "addDirection",
+        "Ring",
+        "HorizontalRight",
+        1
+        ],
+        [
+        "addDirection",
+        "Pinky",
+        "HorizontalRight",
+        1
+        ],
+        [
+        "setWeight",
+        "Index",
+        2
+        ]
+    ],
+    "enabled": true
     })
 
     function handDetect() {
@@ -60,44 +268,149 @@ function App() {
         
     }
 
+    function handPose() {
+        // need to be fixed. detect which hand is using at the beginning
+        let handNum = 0;
+        let indexPose;
+        let thumbLandmark;
+        let indexLandmark;
+        let middleLandmark;
+        let pinkyLandmark;
+        handsfree.data.hands.pointer.forEach((item, idx) => {
+            if (item.isVisible) {
+                handNum = idx;
+                indexPose = handsfree.model.hands.getGesture()[handNum].pose[1][2];
+            }
+        })
+
+        thumbLandmark = handsfree.data.hands.landmarks[handNum][4].y; // 4 = Thumb_tip
+        indexLandmark = handsfree.data.hands.landmarks[handNum][7].y; // 7 = Index_finger_dip,
+        middleLandmark = handsfree.data.hands.landmarks[handNum][12].y; // 12 = Middle_finger_tip
+        pinkyLandmark = handsfree.data.hands.landmarks[handNum][19].y; // 19 = Pinky_dip
+
+        
+        if (handsfree.model.hands.getGesture()[handNum].name === "vertical") {
+            if (indexPose === "Vertical Up" && handDir !== 1) {
+                console.log("up");
+                setDir(DIRECTIONS[38])
+                handDir = 2;
+            } else if ((indexPose === "Vertical Down" ||
+                        indexPose.includes("Diagonal Down")) && handDir !== 2) {
+                console.log("down");
+                setDir(DIRECTIONS[40])
+                handDir = 1;
+            }
+        } else if (handsfree.model.hands.getGesture()[handNum].name === "horizontal") {
+            if (indexPose === "Horizontal Left" && handDir !== 3) {
+                console.log("right");
+                setDir(DIRECTIONS[39]);
+                handDir = 4;
+            } else if ((indexPose === "Horizontal Right" ||
+                        indexPose === "Diagonal Up Right") && handDir !== 4) {
+                console.log("left");
+                setDir(DIRECTIONS[37]);
+                handDir = 3;
+            }
+        } else {
+            if (indexPose.includes("Diagonal Up")) {
+                if (thumbLandmark < pinkyLandmark) {
+                    if (indexLandmark > middleLandmark) {
+                        if (handDir !== 1) {
+                            console.log("1up");
+                            setDir(DIRECTIONS[38])
+                            handDir = 2;
+                        }
+                    } else {
+                        if (handDir !== 3) {
+                            console.log("1right");
+                            setDir(DIRECTIONS[39]);
+                            handDir = 4;
+                        }
+                    }
+                } else {
+                    if (indexLandmark > middleLandmark) {
+                        if (handDir !== 1) {
+                            console.log("1up");
+                            setDir(DIRECTIONS[38])
+                            handDir = 2;
+                        }
+                    } else {
+                        if (handDir !== 3) {
+                            console.log("1right");
+                            setDir(DIRECTIONS[39]);
+                            handDir = 4;
+                        }
+                    }
+                }
+                
+                // if (handsfree.data.hands.landmarks[handNum][7].y > handsfree.data.hands.landmarks[handNum][12].y) { 
+                //     if (handDir !== 1) {
+                //         console.log("1up");
+                //         setDir(DIRECTIONS[38])
+                //         handDir = 2;
+                //     }
+                // } else {
+                //     } if (handDir !== 3) {
+                //         console.log("1right");
+                //         setDir(DIRECTIONS[39]);
+                //         handDir = 4;
+                //     }
+            } else if ((indexPose === "Vertical Down" ||
+                        indexPose.includes("Diagonal Down")) && handDir !== 2) {
+                    console.log("down");
+                    setDir(DIRECTIONS[40])
+                    handDir = 1;
+            } else if (indexPose === "Horizontal Right" && handDir !== 4) {
+                console.log("left");
+                setDir(DIRECTIONS[37]);
+                handDir = 3;
+            }
+        }
+    }
+
+    // 6 and 16
     function handMoveSnake() {
         handDir = 2;
         if (!multi) {
             return window.setInterval(function () {
-                
-                if (handsfree.data.hands.pointer[0].isVisible) {
-                    coordinate[0] = handsfree.data.hands.pointer[0].x;
-                    coordinate[1] = handsfree.data.hands.pointer[0].y;
-                    
-                    if (Math.abs(coordinate[0] - (window.screen.width / 2)) >= Math.abs(coordinate[1] - 300)) {
-                        if (coordinate[0] > (window.screen.width / 2) && handDir !== 3) {
-                            setDir(DIRECTIONS[39]);
-                            handDir = 4;
-                        } else if (coordinate[0] < (window.screen.width / 2) && handDir !== 4) {
-                            setDir(DIRECTIONS[37]);
-                            handDir = 3;
-                        } else {
-                            console.log("Not moving");
-                        }
-                        
-                    } else {
-                        if (coordinate[1] > 300 && handDir !== 2) {
-                            setDir(DIRECTIONS[40])
-                            handDir = 1;
-                        } else if (coordinate[1] < 300 && handDir !== 1) {
-                            setDir(DIRECTIONS[38])
-                            handDir = 2;
-                        } else {
-                            console.log("Not moving");
-                        }
-                        
-                    }
-                    
-                } else {
-                    console.log("..");
-                }
+                handPose();
     
             }, SPEED);
+            // return window.setInterval(function () {
+                
+            //     if (handsfree.data.hands.pointer[0].isVisible) {
+            //         coordinate[0] = handsfree.data.hands.pointer[0].x;
+            //         coordinate[1] = handsfree.data.hands.pointer[0].y;
+                    
+            //         if (Math.abs(coordinate[0] - (window.screen.width / 2)) >= Math.abs(coordinate[1] - 300)) {
+            //             if (coordinate[0] > (window.screen.width / 2) && handDir !== 3) {
+            //                 setDir(DIRECTIONS[39]);
+            //                 handDir = 4;
+            //             } else if (coordinate[0] < (window.screen.width / 2) && handDir !== 4) {
+            //                 setDir(DIRECTIONS[37]);
+            //                 handDir = 3;
+            //             } else {
+            //                 console.log("Not moving");
+            //             }
+                        
+            //         } else {
+            //             if (coordinate[1] > 300 && handDir !== 2) {
+            //                 setDir(DIRECTIONS[40])
+            //                 handDir = 1;
+            //             } else if (coordinate[1] < 300 && handDir !== 1) {
+            //                 setDir(DIRECTIONS[38])
+            //                 handDir = 2;
+            //             } else {
+            //                 console.log("Not moving");
+            //             }
+                        
+            //         }
+                    
+            //     } else {
+            //         console.log("..");
+            //     }
+    
+            // }, SPEED);
             
         } else {
             return window.setInterval(function () {
@@ -145,42 +458,7 @@ function App() {
 
             }, SPEED)
         }
-        // return window.setInterval(function () {
-        //     if (handsfree.data.hands.pointer[0].isVisible) {
-        //         coordinate[0] = handsfree.data.hands.pointer[0].x;
-        //         coordinate[1] = handsfree.data.hands.pointer[0].y;
-        //         if (Math.abs(coordinate[0] - x) >= Math.abs(coordinate[1] - y)) {
-        //             if (coordinate[0] - x > LEGIT_MOVE && handDir !== 3) {
-        //                 setDir(DIRECTIONS[39]);
-        //                 handDir = 4;
-        //             } else if (coordinate[0] - x < -LEGIT_MOVE && handDir !== 4) {
-        //                 setDir(DIRECTIONS[37]);
-        //                 handDir = 3;
-        //             } else {
-        //                 console.log("Not moving");
-        //             }
-                    
-        //         } else {
-        //             if (coordinate[1] - y > LEGIT_MOVE && handDir !== 2) {
-        //                 setDir(DIRECTIONS[40])
-        //                 handDir = 1;
-        //             } else if (coordinate[1] - y < -LEGIT_MOVE && handDir !== 1) {
-        //                 setDir(DIRECTIONS[38])
-        //                 handDir = 2;
-        //             } else {
-        //                 console.log("Not moving");
-        //             }
-                    
-        //         }
 
-        //         x = coordinate[0];
-        //         y = coordinate[1];
-                
-        //     } else {
-        //         console.log("..");
-        //     }
-
-        // }, SPEED);
     }
 
     const startGame = () => {

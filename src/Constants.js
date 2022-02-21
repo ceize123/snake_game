@@ -6,7 +6,7 @@ const SNAKE_START = [
 
 const APPLE_START = [8, 3];
 const SCALE = 30;
-const SPEED = 300;
+const SPEED = 500;
 
 const DIRECTIONS = {
     38: [0, -1], // up
