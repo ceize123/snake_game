@@ -1,6 +1,9 @@
+import rec from './img/rec.png';
+import title_s from './img/title_s.png';
 import WebcamCapture from './WebcamCapture';
 import Handsfree from 'handsfree';
 import React, { useState, useRef, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import UseInterval from './UseInterval';
 import {
     CANVAS_SIZE,
@@ -18,6 +21,9 @@ function handStart(handsfree) {
 
 function GamePage() {
     const canvasRef = useRef(null);
+    const { gameMode } = useParams(); // should be same as the param in App.js
+    console.log(gameMode);
+
     const [mode, setMode] = useState(true);
     const [gameDis, setGameDis] = useState(false);
     const [playerChoose, setPlayerChoose] = useState(false);
@@ -598,7 +604,48 @@ function GamePage() {
     }
 
     return (
-        <>
+        <div className="gameSection mx-3">
+            <img src={rec} alt="rectangle" />
+            <img src={rec} alt="rectangle" />
+            {gameDis !== "hand" ?
+                <div role="button" tabIndex="0" onKeyDown={e => moveSnake(e)}>
+                    <canvas
+                        style={{ border: "1px solid red"}}
+                        ref={ canvasRef }
+                        width={`${CANVAS_SIZE[0]}px`}
+                        height={`${CANVAS_SIZE[1]}px`}
+                    />
+                    {gameOver && <div>GAME OVER!</div>}
+                    <button onClick={startGame}>Start Game</button>
+                </div> :
+                <div>
+                    <canvas
+                        style={{ border: "1px solid red"}}
+                        ref={ canvasRef }
+                        width={`${CANVAS_SIZE[0]}px`}
+                        height={`${CANVAS_SIZE[1]}px`}
+                    />
+                    {gameOver && <div>GAME OVER!</div>}
+                    <button onClick={handDetect}>Hand Detect</button>
+                    <button onClick={startGameHand}>Start Game</button>
+                    <WebcamCapture isMulti={multi}/> 
+                </div>
+            }    
+            <div className="d-flex justify-content-end">
+                <img src={rec} alt="rectangle" />
+                <img src={rec} alt="rectangle" />
+            </div>
+            <div className="optionSection">
+                <img className="title d-block" src={title_s} alt="Snake Game" />
+                <div>
+                    <span>Regular</span>
+                    <span>Hand</span>
+                </div>
+                <div>
+                    <span>Single Player</span>
+                    <span>Two Players</span>
+                </div>
+            </div>
             {mode && 
             <>
             <h1 className="bg-primary">Game type</h1>
@@ -613,44 +660,9 @@ function GamePage() {
                 </>
             }
             <br />
-            {/* {multi &&
-                <>
-                Player One    
-                <button onClick={() => chooseHand("one", 0)}>Left</button>
-                <button name="one" onClick={(e) => chooseHand(e, 1)}>Right</button>
-                Player Two
-                <button name="two" onClick={(e) => chooseHand(e, 2)}>Left</button>
-                <button name="two" onClick={(e) => chooseHand(e, 3)}>Right</button>
-                </>    
-            }     */}
             </>
-        }
-        
-        {gameDis !== "hand" ?
-            <div role="button" tabIndex="0" onKeyDown={e => moveSnake(e)}>
-                <canvas
-                    style={{ border: "1px solid black"}}
-                    ref={ canvasRef }
-                    width={`${CANVAS_SIZE[0]}px`}
-                    height={`${CANVAS_SIZE[1]}px`}
-                />
-                {gameOver && <div>GAME OVER!</div>}
-                <button onClick={startGame}>Start Game</button>
-            </div> :
-            <div>
-                <canvas
-                    style={{ border: "1px solid black"}}
-                    ref={ canvasRef }
-                    width={`${CANVAS_SIZE[0]}px`}
-                    height={`${CANVAS_SIZE[1]}px`}
-                />
-                {gameOver && <div>GAME OVER!</div>}
-                <button onClick={handDetect}>Hand Detect</button>
-                <button onClick={startGameHand}>Start Game</button>
-                <WebcamCapture isMulti={multi}/> 
-            </div>
-        }    
-        </>
+            }
+        </div>
     )
 }
 export default GamePage;

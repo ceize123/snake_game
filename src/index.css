@@ -11133,8 +11133,17 @@ a, button {
   color: #FFF;
 }
 
+span {
+  font-size: 12px;
+  color: #FFF;
+}
+
 button {
   border: none;
+}
+
+i {
+  font-size: 30px;
 }
 
 /* Home page starts */
@@ -11185,13 +11194,33 @@ button {
   position: relative;
 }
 .homeSection .buttonBlock span {
-  font-size: 12;
-  color: #FFF;
   position: absolute;
   bottom: -20px;
   left: 50%;
   transform: translateX(-50%);
   cursor: pointer;
+}
+.homeSection .buttonBlock span::after, .homeSection .buttonBlock span::before {
+  backface-visibility: hidden;
+  border: 1px solid rgba(255, 255, 255, 0);
+  bottom: 0px;
+  content: " ";
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  transition: all 280ms ease-in-out;
+  width: 0;
+}
+.homeSection .buttonBlock span:hover:after, .homeSection .buttonBlock span:hover:before {
+  backface-visibility: hidden;
+  border-color: #fff;
+  transition: width 350ms ease-in-out;
+  width: 100%;
+}
+.homeSection .buttonBlock span:hover:before {
+  bottom: auto;
+  top: 0;
+  width: 100%;
 }
 .homeSection .snakeBackground {
   position: absolute;
@@ -11203,6 +11232,12 @@ button {
 }
 
 /* Home page ends */
+/* Game section starts */
+.gameSection .optionSection {
+  margin-left: 10px;
+}
+
+/* Game section ends */
 .handsfree-canvas {
   width: 50% !important;
 }

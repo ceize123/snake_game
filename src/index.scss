@@ -10,9 +10,7 @@ body {
     overflow: hidden;
 }
 
-p {
-    font-size: 18px;
-}
+p {font-size: 18px;}
 
 a, button {
     font-size: 14px;
@@ -20,9 +18,14 @@ a, button {
     color: #FFF;
 }
 
-button {
-    border: none;
+span {
+    font-size: 12px;
+    color: #FFF;
 }
+
+button {border: none;}
+
+i {font-size: 30px;}
 
 /* Home page starts */
 .homeSection {
@@ -73,13 +76,38 @@ button {
     .buttonBlock {
         position: relative;
         span {
-            font-size: 12;
-            color: #FFF;
             position: absolute;
             bottom: -20px;
             left: 50%;
             transform: translateX(-50%);
             cursor: pointer;
+
+            &::after,
+            &::before {
+            backface-visibility: hidden;
+            border: 1px solid rgba(#fff, 0);
+            bottom: 0px;
+            content: " ";
+            display: block;
+            margin: 0 auto;
+            position: relative;
+            transition: all 280ms ease-in-out;
+            width: 0;
+            }
+
+            &:hover:after,
+            &:hover:before {
+            backface-visibility: hidden;
+            border-color: #fff;
+            transition: width 350ms ease-in-out;
+            width: 100%;
+            }
+    
+            &:hover:before {
+            bottom: auto;
+            top: 0;
+            width: 100%;
+            }
         }
     }
 
@@ -96,6 +124,16 @@ button {
 
 }
 /* Home page ends */
+
+/* Game section starts */
+.gameSection {
+    .optionSection {
+        margin-left: 10px;
+    }
+}
+/* Game section ends */
+
+
 
 
 .handsfree-canvas {
