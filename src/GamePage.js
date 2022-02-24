@@ -606,11 +606,10 @@ function GamePage() {
     return (
         <div className="gameSection mx-3">
             <img src={rec} alt="rectangle" />
-            <img src={rec} alt="rectangle" />
             {gameDis !== "hand" ?
                 <div role="button" tabIndex="0" onKeyDown={e => moveSnake(e)}>
                     <canvas
-                        style={{ border: "1px solid red"}}
+                        style={{ border: "3px solid #F3B707"}}
                         ref={ canvasRef }
                         width={`${CANVAS_SIZE[0]}px`}
                         height={`${CANVAS_SIZE[1]}px`}
@@ -620,7 +619,7 @@ function GamePage() {
                 </div> :
                 <div>
                     <canvas
-                        style={{ border: "1px solid red"}}
+                        style={{ border: "3px solid #F3B707"}}
                         ref={ canvasRef }
                         width={`${CANVAS_SIZE[0]}px`}
                         height={`${CANVAS_SIZE[1]}px`}
@@ -633,18 +632,25 @@ function GamePage() {
             }    
             <div className="d-flex justify-content-end">
                 <img src={rec} alt="rectangle" />
-                <img src={rec} alt="rectangle" />
             </div>
             <div className="optionSection">
                 <img className="title d-block" src={title_s} alt="Snake Game" />
-                <div>
-                    <span>Regular</span>
-                    <span>Hand</span>
+                <div className="d-flex">
+                    <p>Regular</p>
+                    <p>Hand</p>
                 </div>
-                <div>
-                    <span>Single Player</span>
-                    <span>Two Players</span>
+                <label className="switch">
+                    <input type="checkbox" />
+                    <span className="slider round"></span>
+                </label>
+                <div className="d-flex">
+                    <p>Single Player</p>
+                    <p>Two Players</p>
                 </div>
+                <label className="switch">
+                    <input type="checkbox" />
+                    <span className="slider round"></span>
+                </label>
             </div>
             {mode && 
             <>
