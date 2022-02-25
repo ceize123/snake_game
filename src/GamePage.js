@@ -3,7 +3,8 @@ import title_s from './img/title_s.png';
 import WebcamCapture from './WebcamCapture';
 import Handsfree from 'handsfree';
 import React, { useState, useRef, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import UseInterval from './UseInterval';
 import {
     CANVAS_SIZE,
@@ -23,6 +24,7 @@ function GamePage() {
     const canvasRef = useRef(null);
     const { gameMode } = useParams(); // should be same as the param in App.js
     console.log(gameMode);
+    const navigate = useNavigate();
 
     const [mode, setMode] = useState(true);
     const [gameDis, setGameDis] = useState(false);
@@ -648,7 +650,8 @@ function GamePage() {
                     <p>Two Players</p>
                 </div>
                 <label className="switch">
-                    <input type="checkbox" />
+                    {/* useState to change url */}
+                    <input type="checkbox" onClick={()=>{ navigate(`/hand_mode_single`)}}/>
                     <span className="slider round"></span>
                 </label>
             </div>

@@ -58,7 +58,7 @@ function Homepage() {
             <>
             <p className="text-primary">Select player number</p>
             <div className="d-flex buttonBlock">
-                <Link className="d-block text-center button" to={`/game/${modeSelected}_single`}
+                <Link className="d-block text-center button" to={`/${modeSelected}_single`}
                     onMouseOver={() => setContent("bi bi-person-fill")}
                     onMouseLeave={() => setContent("")}>         
                     <svg>
@@ -66,7 +66,7 @@ function Homepage() {
                     </svg>
                     {content ? <i className={content}></i> : initialTxt3}
                 </Link>
-                <Link className="d-block text-center button" to={`/game/${modeSelected}_multi`}
+                <Link className="d-block text-center button" to={`/${modeSelected}_multi`}
                     onMouseOver={() => setContent2("bi bi-people-fill")}
                     onMouseLeave={() => setContent2("")}>
                     <svg>

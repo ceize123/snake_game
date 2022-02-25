@@ -11,7 +11,7 @@ function App() {
         <Router basename={process.env.PUBLIC_URL}>
             <Routes>
                 <Route exact path='/' element={<Homepage/>} />
-                <Route exact path='/game/:gameMode' element={<GamePage/>} />
+                <Route exact path='/:gameMode' element={<GamePage/>} />
 
             </Routes>
         </Router>
