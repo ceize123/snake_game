@@ -594,14 +594,14 @@ function GamePage() {
         }
     }
 
-    const playerNum = (num) => {
-        if (num === 1) {
-            setMulti(false);
-        } else if (num === 2) {
-            setMulti(true);
-        }
-        setGameDis("hand");
-    }
+    // const playerNum = (num) => {
+    //     if (num === 1) {
+    //         setMulti(false);
+    //     } else if (num === 2) {
+    //         setMulti(true);
+    //     }
+    //     setGameDis("hand");
+    // }
 
     return (
         <div className="gameSection mx-3">
@@ -659,12 +659,12 @@ function GamePage() {
             <button onClick={() => selectGameType("hand")}>Hand Detection</button>
             <button>Test</button>
             <br />
-            {playerChoose &&
+            {/* {playerChoose &&
                 <>
                 <button onClick={() => playerNum(1)}>Single Player</button>
                 <button onClick={() => playerNum(2)}>Two Players</button>
                 </>
-            }
+            } */}
             <br />
             </>
             }

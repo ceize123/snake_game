@@ -70,12 +70,14 @@ i {font-size: 30px;}
     
     .buttonBlock {
         position: relative;
-        span {
+        .returnMode {
             position: absolute;
-            bottom: -20px;
+            bottom: -40px;
             left: 50%;
             transform: translateX(-50%);
             cursor: pointer;
+            font-size: 12px;
+            color: #FFF;
 
             &::after,
             &::before {
@@ -105,7 +107,6 @@ i {font-size: 30px;}
             }
         }
     }
-
     
     .snakeBackground {
         position: absolute;

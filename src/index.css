@@ -11188,14 +11188,16 @@ i {
 .homeSection .buttonBlock {
   position: relative;
 }
-.homeSection .buttonBlock span {
+.homeSection .buttonBlock .returnMode {
   position: absolute;
-  bottom: -20px;
+  bottom: -40px;
   left: 50%;
   transform: translateX(-50%);
   cursor: pointer;
+  font-size: 12px;
+  color: #FFF;
 }
-.homeSection .buttonBlock span::after, .homeSection .buttonBlock span::before {
+.homeSection .buttonBlock .returnMode::after, .homeSection .buttonBlock .returnMode::before {
   backface-visibility: hidden;
   border: 1px solid rgba(255, 255, 255, 0);
   bottom: 0px;
@@ -11206,13 +11208,13 @@ i {
   transition: all 280ms ease-in-out;
   width: 0;
 }
-.homeSection .buttonBlock span:hover:after, .homeSection .buttonBlock span:hover:before {
+.homeSection .buttonBlock .returnMode:hover:after, .homeSection .buttonBlock .returnMode:hover:before {
   backface-visibility: hidden;
   border-color: #fff;
   transition: width 350ms ease-in-out;
   width: 100%;
 }
-.homeSection .buttonBlock span:hover:before {
+.homeSection .buttonBlock .returnMode:hover:before {
   bottom: auto;
   top: 0;
   width: 100%;

@@ -11,6 +11,7 @@ function Homepage() {
     const [content, setContent] = useState("");
     const [content2, setContent2] = useState("");
     const [modeSelected, setModeSelected] = useState("");
+
     let initialTxt = "Regular Mode";
     let initialTxt2 = "Hand Mode";
     let initialTxt3 = "Single Player";
@@ -57,7 +58,7 @@ function Homepage() {
             <>
             <p className="text-primary">Select player number</p>
             <div className="d-flex buttonBlock">
-                <Link className="d-block text-center button" to={`/game/${modeSelected}`}
+                <Link className="d-block text-center button" to={`/game/${modeSelected}_single`}
                     onMouseOver={() => setContent("bi bi-person-fill")}
                     onMouseLeave={() => setContent("")}>         
                     <svg>
@@ -65,7 +66,7 @@ function Homepage() {
                     </svg>
                     {content ? <i className={content}></i> : initialTxt3}
                 </Link>
-                <Link className="d-block text-center button" to={`/game/${modeSelected}`}
+                <Link className="d-block text-center button" to={`/game/${modeSelected}_multi`}
                     onMouseOver={() => setContent2("bi bi-people-fill")}
                     onMouseLeave={() => setContent2("")}>
                     <svg>
@@ -73,7 +74,7 @@ function Homepage() {
                     </svg>
                     {content2 ? <i className={content2}></i> : initialTxt4}
                     </Link>
-                    <span onClick={() => handleClick()}>Select the mode</span> 
+                    <p className="returnMode" onClick={() => handleClick()}>Select the mode</p> 
                     
             </div>
             </>
