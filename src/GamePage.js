@@ -1,10 +1,11 @@
 import rec from './img/rec.png';
 import title_s from './img/title_s.png';
+import detect from './img/detect.png';
+import start from './img/start.png';
 import WebcamCapture from './WebcamCapture';
 import Handsfree from 'handsfree';
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 import UseInterval from './UseInterval';
 import {
     CANVAS_SIZE,
@@ -23,20 +24,24 @@ function handStart(handsfree) {
 function GamePage() {
     const canvasRef = useRef(null);
     const { gameMode } = useParams(); // should be same as the param in App.js
-    console.log(gameMode);
     const navigate = useNavigate();
 
-    const [mode, setMode] = useState(true);
+    const [handMode, setHandMode] = useState();
+    const [multi, setMulti] = useState();
+    const [isDetected, setIsDetected] = useState(false);
     const [gameDis, setGameDis] = useState(false);
-    const [playerChoose, setPlayerChoose] = useState(false);
-    const [multi, setMulti] = useState(false);
     const [snake, setSnake] = useState(SNAKE_START);
     const [apple, setApple] = useState(APPLE_START);
     const [dir, setDir] = useState([0, -1]); // going up
     const [speed, setSpeed] = useState(null);
     const [gameOver, setGameOver] = useState(false);
     const [interval, setInterval] = useState(null);
-    
+
+    // start and detect Button
+    const [content, setContent] = useState("");
+    const [content2, setContent2] = useState("");
+    let initialTxt = "Hand Detect";
+    let initialTxt2 = "Start Game";
 
     let coordinate = [];
     let handDir = 0; // Don't know why const [dir, setDir] = useState([0, -1]); is not working in setInterval.
@@ -269,7 +274,10 @@ function GamePage() {
                     detected = true;
                 }
 
-                if (detected) clearInterval(detectHand);
+                if (detected) {
+                    setIsDetected(true);
+                    clearInterval(detectHand);
+                }
             }, 500)
         }, 1500); 
     }
@@ -483,7 +491,7 @@ function GamePage() {
         if (interval !== null) {
             clearInterval(interval);
         }
-        setMode(true);
+        // setMode(true);
     }
 
     const moveSnake = ({ keyCode }) => {
@@ -569,6 +577,22 @@ function GamePage() {
         setSnake(snakeCopy);
     }
 
+    useEffect(() => {
+        if (gameMode === "regular_mode_single") {
+        setHandMode(false);
+        setMulti(false);
+    } else if (gameMode === "regular_mode_multi") {
+        setHandMode(false);
+        setMulti(true);
+    } else if (gameMode === "hand_mode_single") {
+        setHandMode(true);
+        setMulti(false);
+    } else if (gameMode === "hand_mode_multi") {
+        setHandMode(true);
+        setMulti(true);
+    }
+    }, [gameMode])
+
     // trigger whenever snake, apple or end of the game state has been updated
     useEffect(() => {
         // get the context to be able to draw with this context on the canvas
@@ -587,23 +611,39 @@ function GamePage() {
 
     UseInterval(() => gameLoop(), speed);
 
-    const selectGameType = (opt) => {
-        if (opt === "reg") {
-            setGameDis("reg");
-            setPlayerChoose(false);
-        } else if (opt === "hand") {
-            setPlayerChoose(true);
+    const handleGameMode = (e) => {
+        if (e.target.checked) {
+            navigate(`/hand_mode_${!multi ? "single": "multi"}`);
+        } else {
+            navigate(`/regular_mode_${!multi ? "single": "multi"}`);
+        }
+        
+    }
+
+    const handlePlayers = (e) => {
+        if (e.target.checked) {
+            if (handMode) {
+                navigate(`/hand_mode_multi`);
+            } else {
+                navigate(`/regular_mode_multi`);
+            }
+            
+        } else {
+            if (handMode) {
+                navigate(`/hand_mode_single`);
+            } else {
+                navigate(`/regular_mode_single`);
+            }
         }
     }
 
-    // const playerNum = (num) => {
-    //     if (num === 1) {
-    //         setMulti(false);
-    //     } else if (num === 2) {
-    //         setMulti(true);
-    //     }
-    //     setGameDis("hand");
-    // }
+    const mouseOverStart = () => {
+        if (isDetected) {
+            setContent2(start);
+        }
+    }
+
+    console.log(isDetected);
 
     return (
         <div className="gameSection mx-3">
@@ -617,7 +657,7 @@ function GamePage() {
                         height={`${CANVAS_SIZE[1]}px`}
                     />
                     {gameOver && <div>GAME OVER!</div>}
-                    <button onClick={startGame}>Start Game</button>
+                    
                 </div> :
                 <div>
                     <canvas
@@ -627,50 +667,73 @@ function GamePage() {
                         height={`${CANVAS_SIZE[1]}px`}
                     />
                     {gameOver && <div>GAME OVER!</div>}
-                    <button onClick={handDetect}>Hand Detect</button>
-                    <button onClick={startGameHand}>Start Game</button>
+                    
                     <WebcamCapture isMulti={multi}/> 
                 </div>
             }    
             <div className="d-flex justify-content-end">
                 <img src={rec} alt="rectangle" />
             </div>
-            <div className="optionSection">
-                <img className="title d-block" src={title_s} alt="Snake Game" />
-                <div className="d-flex">
-                    <p>Regular</p>
-                    <p>Hand</p>
+            <div className="d-flex gameSet">
+                <div className="optionSection">
+                    <img className="title d-block" src={title_s} alt="Snake Game" />
+                    <div className="d-flex">
+                        <p>Regular</p>
+                        <p>Hand</p>
+                    </div>
+                    <label className="switch">
+                        <input type="checkbox" defaultChecked={handMode} onClick={(e)=>{handleGameMode(e) }}/>
+                        <span className="slider round"></span>
+                    </label>
+                    <div className="d-flex">
+                        <p>Single Player</p>
+                        <p>Two Players</p>
+                    </div>
+                    <label className="switch">
+                        {/* useState to change url */}
+                        <input type="checkbox" defaultChecked={multi} onClick={(e)=>{handlePlayers(e) }}/>
+                        <span className="slider round"></span>
+                    </label>
                 </div>
-                <label className="switch">
-                    <input type="checkbox" />
-                    <span className="slider round"></span>
-                </label>
-                <div className="d-flex">
-                    <p>Single Player</p>
-                    <p>Two Players</p>
+                <div className="mt-5 buttonBlock">
+                {handMode ? 
+                    <>
+                    <button className="button" onClick={handDetect}
+                        onMouseOver={() => setContent(detect)}
+                        onMouseLeave={() => setContent("")}>
+                    <svg>
+                        <rect x="0" y="0" fill="none" width="100%" height="100%"/>
+                    </svg>
+                    {content ? <img src={content} alt="detect" /> : initialTxt}
+                    </button>
+                    <button className="button" onClick={startGameHand}
+                        onMouseOver={() => mouseOverStart()}
+                        onMouseLeave={() => setContent2("")}
+                        disabled={!isDetected}>
+                        {content2 ? 
+                        <>
+                        <svg>
+                            <rect x="0" y="0" fill="none" width="100%" height="100%"/>
+                        </svg>
+                        <img src={content2} alt="start" />
+                        </>
+                         :
+                        initialTxt2
+                        }
+                    </button>
+                    </> :
+                    <button className="button" onClick={startGame}
+                        onMouseOver={() => setContent2(start)}
+                        onMouseLeave={() => setContent2("")}>
+                        <svg>
+                            <rect x="0" y="0" fill="none" width="100%" height="100%"/>
+                        </svg>
+                        {content2 ? <img src={content2} alt="start" /> : initialTxt2}
+                    </button>
+                }
                 </div>
-                <label className="switch">
-                    {/* useState to change url */}
-                    <input type="checkbox" onClick={()=>{ navigate(`/hand_mode_single`)}}/>
-                    <span className="slider round"></span>
-                </label>
+                {/* <WebcamCapture isMulti={false}/> */}
             </div>
-            {mode && 
-            <>
-            <h1 className="bg-primary">Game type</h1>
-            <button onClick={() => selectGameType("reg")}>Regular</button>
-            <button onClick={() => selectGameType("hand")}>Hand Detection</button>
-            <button>Test</button>
-            <br />
-            {/* {playerChoose &&
-                <>
-                <button onClick={() => playerNum(1)}>Single Player</button>
-                <button onClick={() => playerNum(2)}>Two Players</button>
-                </>
-            } */}
-            <br />
-            </>
-            }
         </div>
     )
 }
