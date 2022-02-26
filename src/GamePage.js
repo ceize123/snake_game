@@ -29,6 +29,7 @@ function GamePage() {
     const [handMode, setHandMode] = useState();
     const [multi, setMulti] = useState();
     const [isDetected, setIsDetected] = useState(false);
+    const [hand, setHand] = useState([]);
     const [gameDis, setGameDis] = useState(false);
     const [snake, setSnake] = useState(SNAKE_START);
     const [apple, setApple] = useState(APPLE_START);
@@ -269,33 +270,38 @@ function GamePage() {
         setTimeout(() => {
             let detectHand = window.setInterval(function () {
                 let detected = false;
-                if (handsfree.data.hands.pointer[0].isVisible) {
-                    console.log("Hand Detected!")
-                    detected = true;
-                }
+                console.log(handsfree.data.hands.pointer);
+                handsfree.data.hands.pointer.forEach((item, idx) => {
+                    if (item.isVisible) {
+                        const updatedArray = [...hand, idx];
+                        console.log("Hand Detected!");
+                        setHand(updatedArray);
+                        // setIsDetected(true);
+                        detected = true;
+                    }
+                })
 
-                if (detected) {
-                    setIsDetected(true);
-                    clearInterval(detectHand);
-                }
+                if (detected) clearInterval(detectHand);
             }, 500)
         }, 1500); 
     }
 
-    function handPose() {
+    function handPose(handNum) {
         // need to be fixed. detect which hand is using at the beginning
-        let handNum = 0;
+        // let handNum = 0;
         let indexPose;
         let thumbLandmark;
         let indexLandmark;
         let middleLandmark;
         let pinkyLandmark;
-        handsfree.data.hands.pointer.forEach((item, idx) => {
-            if (item.isVisible) {
-                handNum = idx;
-                indexPose = handsfree.model.hands.getGesture()[handNum].pose[1][2];
-            }
-        })
+        console.log(handNum);
+
+        // handsfree.data.hands.pointer.forEach((item, idx) => {
+        //     if (item.isVisible) {
+        //         handNum = idx;
+        //         indexPose = handsfree.model.hands.getGesture()[handNum].pose[1][2];
+        //     }
+        // })
 
         thumbLandmark = handsfree.data.hands.landmarks[handNum][4].y; // 4 = Thumb_tip
         indexLandmark = handsfree.data.hands.landmarks[handNum][7].y; // 7 = Index_finger_dip,
@@ -373,9 +379,10 @@ function GamePage() {
 
     function handMoveSnake() {
         handDir = 2;
+        
         if (!multi) {
             return window.setInterval(function () {
-                handPose();
+                handPose(hand[0]);
     
             }, SPEED);
             // return window.setInterval(function () {
@@ -468,20 +475,32 @@ function GamePage() {
         setApple(APPLE_START);
         setDir([0, -1]);
         setGameOver(false);
-        // handStart(handsfree);
         setSpeed(SPEED);
         // setMode(false);
     }
 
     const startGameHand = () => {
-        setSnake(SNAKE_START);
-        setApple(APPLE_START);
-        setDir([0, -1]);
-        setGameOver(false);
-        // handStart(handsfree);
-        setSpeed(SPEED);
-        setInterval(handMoveSnake);
-        // setMode(false);
+        // setSnake(SNAKE_START);
+        // setApple(APPLE_START);
+        // setDir([0, -1]);
+        // setGameOver(false);
+        // setSpeed(SPEED);
+        // setInterval(handMoveSnake);
+        let detectHand = window.setInterval(function () {
+                let detected = false;
+            console.log(handsfree.data);
+            // handsfree.data.hands.pointer.forEach((item, idx) => {
+            //     if (item.isVisible) {
+            //         const updatedArray = [...hand, idx];
+            //         console.log("Hand Detected!");
+            //         setHand(updatedArray);
+            //         // setIsDetected(true);
+            //         detected = true;
+            //     }
+            // })
+
+            // if (detected) clearInterval(detectHand);
+        }, 500)
     }
 
     const endGame = () => {
@@ -643,8 +662,6 @@ function GamePage() {
         }
     }
 
-    console.log(isDetected);
-
     return (
         <div className="gameSection mx-3">
             <img src={rec} alt="rectangle" />
@@ -709,7 +726,7 @@ function GamePage() {
                     <button className="button" onClick={startGameHand}
                         onMouseOver={() => mouseOverStart()}
                         onMouseLeave={() => setContent2("")}
-                        disabled={!isDetected}>
+                        >
                         {content2 ? 
                         <>
                         <svg>
@@ -732,8 +749,8 @@ function GamePage() {
                     </button>
                 }
                 </div>
-                {/* <WebcamCapture isMulti={false}/> */}
             </div>
+                {/* <WebcamCapture isMulti={false}/> */}
         </div>
     )
 }
