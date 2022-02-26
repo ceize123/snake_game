@@ -46,11 +46,10 @@ button {border: none;}
         stroke-width: 2;
         stroke-dasharray: 422, 0;
         transition: all 0.35s linear;
-        
     }
 
     &:hover:not(:disabled) {
-    background-color: $dark;
+        background-color: $dark;
 
         rect {
             stroke-width: 5;
@@ -62,6 +61,10 @@ button {border: none;}
 
     &:disabled {
         background-color: #0A3633;
+
+        rect {
+            stroke: $dark;
+        }
     }
 }
 
@@ -128,6 +131,15 @@ i {font-size: 30px;}
 
 /* Game section starts */
 .gameSection {
+    position: relative;
+    .alert {
+        position: absolute;
+        font-size: 18px;
+        color: $primary;
+        top: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
     .optionSection {
         margin-left: 10px;
 
@@ -209,6 +221,14 @@ i {font-size: 30px;}
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
+
+            .button {
+                img {display: none;}
+                &:hover {
+                    span {display: none;}
+                    img {display: inline;}
+                }
+            }
         }
     }
 }

@@ -11177,6 +11177,9 @@ button {
 .button:disabled {
   background-color: #0A3633;
 }
+.button:disabled rect {
+  stroke: #1B1818;
+}
 
 i {
   font-size: 30px;
@@ -11234,6 +11237,17 @@ i {
 
 /* Home page ends */
 /* Game section starts */
+.gameSection {
+  position: relative;
+}
+.gameSection .alert {
+  position: absolute;
+  font-size: 18px;
+  color: #F21876;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+}
 .gameSection .optionSection {
   margin-left: 10px;
 }
@@ -11308,6 +11322,15 @@ i {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+}
+.gameSection .gameSet .buttonBlock .button img {
+  display: none;
+}
+.gameSection .gameSet .buttonBlock .button:hover span {
+  display: none;
+}
+.gameSection .gameSet .buttonBlock .button:hover img {
+  display: inline;
 }
 
 /* Game section ends */

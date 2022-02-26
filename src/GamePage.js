@@ -28,21 +28,18 @@ function GamePage() {
 
     const [handMode, setHandMode] = useState();
     const [multi, setMulti] = useState();
-    const [isDetected, setIsDetected] = useState(false);
+    // const [isDisabled, setIsDisabled] = useState(true);
+    const [alert, setAlert] = useState("");
+    const [ready, setReady] = useState(false);
     const [hand, setHand] = useState([]);
-    const [gameDis, setGameDis] = useState(false);
     const [snake, setSnake] = useState(SNAKE_START);
     const [apple, setApple] = useState(APPLE_START);
     const [dir, setDir] = useState([0, -1]); // going up
     const [speed, setSpeed] = useState(null);
     const [gameOver, setGameOver] = useState(false);
     const [interval, setInterval] = useState(null);
-
-    // start and detect Button
-    const [content, setContent] = useState("");
-    const [content2, setContent2] = useState("");
-    let initialTxt = "Hand Detect";
-    let initialTxt2 = "Start Game";
+    
+    let detected = false;
 
     let coordinate = [];
     let handDir = 0; // Don't know why const [dir, setDir] = useState([0, -1]); is not working in setInterval.
@@ -265,43 +262,44 @@ function GamePage() {
     "enabled": true
     })
 
+    // try detect the moment user enters
     function handDetect() {
+        detected = false;
         handStart(handsfree);
         setTimeout(() => {
             let detectHand = window.setInterval(function () {
-                let detected = false;
-                console.log(handsfree.data.hands.pointer);
-                handsfree.data.hands.pointer.forEach((item, idx) => {
-                    if (item.isVisible) {
-                        const updatedArray = [...hand, idx];
-                        console.log("Hand Detected!");
-                        setHand(updatedArray);
-                        // setIsDetected(true);
-                        detected = true;
-                    }
-                })
+                if (handsfree.data.hands.pointer[0].isVisible) {
+                    console.log("Hand Detected!");
+                    detected = true;
+                    // setReady(true); // still not working...........
+                    // setAlert("Hand(s) Detected");
+                }
 
                 if (detected) clearInterval(detectHand);
             }, 500)
         }, 1500); 
     }
 
-    function handPose(handNum) {
+    // useEffect(() => {
+    //     if (setReady) {
+    //         setAlert("Hand(s) Detected");
+    //     }
+    // }, [setReady])
+
+    function handPose() {
         // need to be fixed. detect which hand is using at the beginning
-        // let handNum = 0;
+        let handNum = 0;
         let indexPose;
         let thumbLandmark;
         let indexLandmark;
         let middleLandmark;
         let pinkyLandmark;
-        console.log(handNum);
-
-        // handsfree.data.hands.pointer.forEach((item, idx) => {
-        //     if (item.isVisible) {
-        //         handNum = idx;
-        //         indexPose = handsfree.model.hands.getGesture()[handNum].pose[1][2];
-        //     }
-        // })
+        handsfree.data.hands.pointer.forEach((item, idx) => {
+            if (item.isVisible) {
+                handNum = idx;
+                indexPose = handsfree.model.hands.getGesture()[handNum].pose[1][2];
+            }
+        })
 
         thumbLandmark = handsfree.data.hands.landmarks[handNum][4].y; // 4 = Thumb_tip
         indexLandmark = handsfree.data.hands.landmarks[handNum][7].y; // 7 = Index_finger_dip,
@@ -379,10 +377,9 @@ function GamePage() {
 
     function handMoveSnake() {
         handDir = 2;
-        
         if (!multi) {
             return window.setInterval(function () {
-                handPose(hand[0]);
+                handPose();
     
             }, SPEED);
             // return window.setInterval(function () {
@@ -475,32 +472,20 @@ function GamePage() {
         setApple(APPLE_START);
         setDir([0, -1]);
         setGameOver(false);
+        // handStart(handsfree);
         setSpeed(SPEED);
         // setMode(false);
     }
 
     const startGameHand = () => {
-        // setSnake(SNAKE_START);
-        // setApple(APPLE_START);
-        // setDir([0, -1]);
-        // setGameOver(false);
-        // setSpeed(SPEED);
-        // setInterval(handMoveSnake);
-        let detectHand = window.setInterval(function () {
-                let detected = false;
-            console.log(handsfree.data);
-            // handsfree.data.hands.pointer.forEach((item, idx) => {
-            //     if (item.isVisible) {
-            //         const updatedArray = [...hand, idx];
-            //         console.log("Hand Detected!");
-            //         setHand(updatedArray);
-            //         // setIsDetected(true);
-            //         detected = true;
-            //     }
-            // })
-
-            // if (detected) clearInterval(detectHand);
-        }, 500)
+        setSnake(SNAKE_START);
+        setApple(APPLE_START);
+        setDir([0, -1]);
+        setGameOver(false);
+        // handStart(handsfree);
+        setSpeed(SPEED);
+        setInterval(handMoveSnake);
+        // setMode(false);
     }
 
     const endGame = () => {
@@ -605,12 +590,13 @@ function GamePage() {
         setMulti(true);
     } else if (gameMode === "hand_mode_single") {
         setHandMode(true);
-        setMulti(false);
+        setMulti(false); 
+        // try detect the moment user enters.
     } else if (gameMode === "hand_mode_multi") {
         setHandMode(true);
         setMulti(true);
     }
-    }, [gameMode])
+    }, [gameMode, detected])
 
     // trigger whenever snake, apple or end of the game state has been updated
     useEffect(() => {
@@ -656,16 +642,10 @@ function GamePage() {
         }
     }
 
-    const mouseOverStart = () => {
-        if (isDetected) {
-            setContent2(start);
-        }
-    }
-
     return (
         <div className="gameSection mx-3">
             <img src={rec} alt="rectangle" />
-            {gameDis !== "hand" ?
+            {!handMode ?
                 <div role="button" tabIndex="0" onKeyDown={e => moveSnake(e)}>
                     <canvas
                         style={{ border: "3px solid #F3B707"}}
@@ -674,7 +654,7 @@ function GamePage() {
                         height={`${CANVAS_SIZE[1]}px`}
                     />
                     {gameOver && <div>GAME OVER!</div>}
-                    
+                    <button onClick={startGame}>Start Game</button>
                 </div> :
                 <div>
                     <canvas
@@ -683,15 +663,16 @@ function GamePage() {
                         width={`${CANVAS_SIZE[0]}px`}
                         height={`${CANVAS_SIZE[1]}px`}
                     />
+                    <p className="alert">{alert}</p>
                     {gameOver && <div>GAME OVER!</div>}
                     
-                    <WebcamCapture isMulti={multi}/> 
+                    {/* <WebcamCapture isMulti={multi}/>  */}
                 </div>
             }    
             <div className="d-flex justify-content-end">
                 <img src={rec} alt="rectangle" />
             </div>
-            <div className="d-flex gameSet">
+           <div className="d-flex gameSet">
                 <div className="optionSection">
                     <img className="title d-block" src={title_s} alt="Snake Game" />
                     <div className="d-flex">
@@ -707,7 +688,6 @@ function GamePage() {
                         <p>Two Players</p>
                     </div>
                     <label className="switch">
-                        {/* useState to change url */}
                         <input type="checkbox" defaultChecked={multi} onClick={(e)=>{handlePlayers(e) }}/>
                         <span className="slider round"></span>
                     </label>
@@ -715,13 +695,30 @@ function GamePage() {
                 <div className="mt-5 buttonBlock">
                 {handMode ? 
                     <>
-                    <button className="button" onClick={handDetect}
+                    
+                    <button className="button" onClick={handDetect}>
+                        <span>Hand Detect</span>
+                        <img src={detect} alt="detect" />
+                        <svg>
+                            <rect x="0" y="0" fill="none" width="100%" height="100%"/>
+                        </svg>
+                    </button>
+                    <button className="button" onClick={startGameHand}>
+                        <span>Start Game</span>
+                        <img src={start} alt="start" />
+                        <svg>
+                            <rect x="0" y="0" fill="none" width="100%" height="100%"/>
+                        </svg>
+                    </button>    
+                            
+                    {/* not working. Bugs... */}
+                    {/* <button className="button" onClick={handDetect}
                         onMouseOver={() => setContent(detect)}
                         onMouseLeave={() => setContent("")}>
                     <svg>
                         <rect x="0" y="0" fill="none" width="100%" height="100%"/>
                     </svg>
-                    {content ? <img src={content} alt="detect" /> : initialTxt}
+                    {content ? <img src={content} alt="detect" /> : "Hand Detect"}
                     </button>
                     <button className="button" onClick={startGameHand}
                         onMouseOver={() => mouseOverStart()}
@@ -735,22 +732,22 @@ function GamePage() {
                         <img src={content2} alt="start" />
                         </>
                          :
-                        initialTxt2
+                        "Start Game"
                         }
-                    </button>
+                    </button> */}
                     </> :
-                    <button className="button" onClick={startGame}
-                        onMouseOver={() => setContent2(start)}
-                        onMouseLeave={() => setContent2("")}>
+                    <button className="button" onClick={startGame}>
+                        <span>Start Game</span>
+                        <img src={start} alt="start" />
                         <svg>
                             <rect x="0" y="0" fill="none" width="100%" height="100%"/>
                         </svg>
-                        {content2 ? <img src={content2} alt="start" /> : initialTxt2}
                     </button>
                 }
                 </div>
             </div>
-                {/* <WebcamCapture isMulti={false}/> */}
+  
+            
         </div>
     )
 }
