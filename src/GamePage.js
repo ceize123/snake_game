@@ -39,7 +39,7 @@ function GamePage() {
     const [gameOver, setGameOver] = useState(false);
     const [interval, setInterval] = useState(null);
     
-    let detected = false;
+    // let detected = false;
 
     let handDir = 0; // Don't know why const [dir, setDir] = useState([0, -1]); is not working in setInterval.
     const handsfree = new Handsfree({
@@ -269,22 +269,25 @@ function GamePage() {
 
 
     // try detect the moment user enters
-    const handDetect = () => {
-        detected = false;
-        handStart(handsfree);
-        let detectHand = window.setInterval(function () {
-            handsfree.data.hands.pointer.forEach((item, idx) => {
-                if (item.isVisible) {
-                    console.log("Hand Detected!");
-                    console.log(idx);
-                    detected = true;
-                    setIsDetected(!isDetected);
+    const handDetect = async () => {
+        return new Promise((resolve, reject) => {
+            let detected = false;
+            handStart(handsfree);
+            const detectHand = window.setInterval(async () => {
+                handsfree.data.hands.pointer.forEach((item) => {
+                    if (item.isVisible) {
+                        console.log("Hand Detected!");
+                        detected = true;
+                    }
+                })
+                
+                if (await detected) {
+                    resolve();
+                    clearInterval(detectHand);
                 }
-            })
-            
-            
-            if (detected) clearInterval(detectHand);
-        }, 500)
+            }, 500)
+        
+        })
     }
 
     // useEffect(() => {
@@ -474,7 +477,10 @@ function GamePage() {
 
     }
 
+    
+
     const startGame = () => {
+        
         setSnake(SNAKE_START);
         setApple(APPLE_START);
         setDir([0, -1]);
@@ -484,14 +490,16 @@ function GamePage() {
         // setMode(false);
     }
 
-    const startGameHand = () => {
-        setSnake(SNAKE_START);
-        setApple(APPLE_START);
-        setDir([0, -1]);
-        setGameOver(false);
-        // handStart(handsfree);
-        setSpeed(SPEED);
-        setInterval(handMoveSnake);
+    const startGameHand = async () => {
+        return new Promise((resolve, reject) => {
+            setSnake(SNAKE_START);
+            setApple(APPLE_START);
+            setDir([0, -1]);
+            setGameOver(false);
+            // handStart(handsfree);
+            setSpeed(SPEED);
+            setInterval(handMoveSnake);
+        })
         // setMode(false);
     }
 
@@ -503,6 +511,10 @@ function GamePage() {
             clearInterval(interval);
         }
         // setMode(true);
+    }
+
+    const test = () => {
+        handDetect().then(() => {startGameHand()});
     }
 
     const moveSnake = ({ keyCode }) => {
@@ -714,7 +726,7 @@ function GamePage() {
                             <rect x="0" y="0" fill="none" width="100%" height="100%"/>
                         </svg>
                     </button>
-                        <button className="button" onClick={startGameHand}>
+                        <button className="button" onClick={test}>
                         <span>Start Game</span>
                         <img src={start} alt="start" />
                         <svg>
