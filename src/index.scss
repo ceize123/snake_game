@@ -69,7 +69,10 @@ button {border: none;}
 }
 
 
-i {font-size: 30px;}
+i {
+    font-size: 30px;
+    color: $primary;
+}
 
 /* Home page starts */
 .homeSection {
@@ -124,6 +127,28 @@ i {font-size: 30px;}
     .snakeBottom {
         bottom: 0;
         right: 0;
+    }
+
+    // background effect
+    .color {
+        display:block;
+        width:0;
+        height:0;
+        left:50%;
+        top:50%;
+        transform:translate(-50%,-50%);
+        position:absolute;
+        transition:0.8s ease;
+        border-radius:50%;
+        background-color:$info;
+        transition-delay:(0.5);
+    }
+
+    .expanded {
+        width:200%;
+        padding-bottom:200%;
+        height:auto; 
+
     }
 
 }
@@ -244,32 +269,33 @@ i {font-size: 30px;}
 /* Webcam starts */
 
 .webcam {
-    display: inline-block;
+    video { width: 20vw; }
+
+    // .dot {
+    //   height: 5px;
+    //   width: 5px;
+    //   background-color: #bbb;
+    //   display: inline-block;
+    //   position: absolute;
+    // }
+    
+    // .dot::before,.dot::after{
+    //     content:'';
+    //     position:absolute;
+    //     background-color: #bbb;
+    // }
+    
+    // .dot:before{
+    //     left: -70px;
+    //     width: 140px;
+    //     height: 5px;
+    // }
+    // .dot:after{
+    //     top: -70px;
+    //     width: 5px;
+    //     height: 140px;
+    // }
 }
 
-.dot {
-  height: 5px;
-  width: 5px;
-  background-color: #bbb;
-  display: inline-block;
-  position: absolute;
-}
-
-.dot::before,.dot::after{
-    content:'';
-    position:absolute;
-    background-color: #bbb;
-}
-
-.dot:before{
-    left: -70px;
-    width: 140px;
-    height: 5px;
-}
-.dot:after{
-    top: -70px;
-    width: 5px;
-    height: 140px;
-}
 
 /* Webcam ends */

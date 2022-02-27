@@ -11183,6 +11183,7 @@ button {
 
 i {
   font-size: 30px;
+  color: #F21876;
 }
 
 /* Home page starts */
@@ -11233,6 +11234,24 @@ i {
 .homeSection .snakeBottom {
   bottom: 0;
   right: 0;
+}
+.homeSection .color {
+  display: block;
+  width: 0;
+  height: 0;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  transition: 0.8s ease;
+  border-radius: 50%;
+  background-color: #057068;
+  transition-delay: 0.5;
+}
+.homeSection .expanded {
+  width: 200%;
+  padding-bottom: 200%;
+  height: auto;
 }
 
 /* Home page ends */
@@ -11339,34 +11358,8 @@ i {
 }
 
 /* Webcam starts */
-.webcam {
-  display: inline-block;
-}
-
-.dot {
-  height: 5px;
-  width: 5px;
-  background-color: #bbb;
-  display: inline-block;
-  position: absolute;
-}
-
-.dot::before, .dot::after {
-  content: "";
-  position: absolute;
-  background-color: #bbb;
-}
-
-.dot:before {
-  left: -70px;
-  width: 140px;
-  height: 5px;
-}
-
-.dot:after {
-  top: -70px;
-  width: 5px;
-  height: 140px;
+.webcam video {
+  width: 20vw;
 }
 
 /* Webcam ends */

@@ -54,16 +54,14 @@ const WebcamCapture = (prop) => {
 
 
   return (
-    <div className="webcam" ref={webcamBlock}>
+    <div className="webcam d-flex" ref={webcamBlock} style={{ border: "3px solid #F3B707"}}>
     
         <Webcam
         audio={false}
         ref={webcamRef}
-        // height={360}
-        width={640}
         mirrored={true}
         />
-        <div
+        {/* <div
             className="dot"
             style={style}
         ></div>  
@@ -72,7 +70,7 @@ const WebcamCapture = (prop) => {
             className="dot"
             style={style2}
         ></div>  
-        }  
+        }   */}
     </div>
   );
 };

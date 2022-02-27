@@ -31,7 +31,7 @@ function GamePage() {
     const [multi, setMulti] = useState();
     // const [isDisabled, setIsDisabled] = useState(true);
     const [alert, setAlert] = useState("Please press the Detect Button and put your hands up");
-    const [isDetected, setIsDetected] = useState(false);
+    // const [isDetected, setIsDetected] = useState(false);
     const [snake, setSnake] = useState(SNAKE_START);
     const [apple, setApple] = useState(APPLE_START);
     const [dir, setDir] = useState([0, -1]); // going up
@@ -385,7 +385,7 @@ function GamePage() {
 
     function handMoveSnake() {
         handDir = 2;
-        console.log(isDetected);
+
         if (!multi) {
             return window.setInterval(function () {
                 handPose();
@@ -514,9 +514,22 @@ function GamePage() {
     }
 
     const handleStart = () => {
+        let count = 3;
+        setAlert("Detecting...");
         handDetect()
-            .then(()=> {setAlert("Hand(s) Detected")})
-            .then(() => { startGameHand() });
+            .then(() => { setAlert("Hand(s) Detected") })
+            .then(() => {
+                let countdown = window.setInterval(() =>{
+                    if (count === 0) clearInterval(countdown)
+                    setAlert(count--)
+                }, 1000)
+            })
+            .then(() => {
+                setTimeout(() => {
+                    setAlert("")
+                    startGameHand()
+                }, 4000)
+            });
     }
 
     const moveSnake = ({ keyCode }) => {
@@ -697,7 +710,7 @@ function GamePage() {
             <div className="d-flex justify-content-end">
                 <img src={rec} alt="rectangle" />
             </div>
-           <div className="d-flex gameSet">
+           <div className="d-flex gameSet justify-content-between mt-3">
                 <div className="optionSection">
                     <img className="title d-block" src={title_s} alt="Snake Game" />
                     <div className="d-flex">
@@ -770,6 +783,8 @@ function GamePage() {
                     </button>
                 }
                 </div>
+                {handMode && <WebcamCapture isMulti={multi}/>}
+                
             </div>
   
             
