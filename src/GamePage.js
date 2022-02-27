@@ -16,10 +16,11 @@ import {
     DIRECTIONS,
 } from './Constants';
 
-function handStart(handsfree) {
-    handsfree.enablePlugins('browser');
-    handsfree.start();
-}
+// function handStart(handsfree) {
+//     handsfree.enablePlugins('browser');
+//     handsfree.start();
+// }
+
 
 function GamePage() {
     const canvasRef = useRef(null);
@@ -29,9 +30,8 @@ function GamePage() {
     const [handMode, setHandMode] = useState();
     const [multi, setMulti] = useState();
     // const [isDisabled, setIsDisabled] = useState(true);
-    const [alert, setAlert] = useState("");
-    const [ready, setReady] = useState(false);
-    const [hand, setHand] = useState([]);
+    const [alert, setAlert] = useState("Please press the Detect Button and put your hands up");
+    const [isDetected, setIsDetected] = useState(false);
     const [snake, setSnake] = useState(SNAKE_START);
     const [apple, setApple] = useState(APPLE_START);
     const [dir, setDir] = useState([0, -1]); // going up
@@ -41,7 +41,6 @@ function GamePage() {
     
     let detected = false;
 
-    let coordinate = [];
     let handDir = 0; // Don't know why const [dir, setDir] = useState([0, -1]); is not working in setInterval.
     const handsfree = new Handsfree({
         // showDebug: true,
@@ -262,29 +261,35 @@ function GamePage() {
     "enabled": true
     })
 
+    function handStart(handsfree) {
+        handsfree.enablePlugins('browser');
+        handsfree.start();
+        
+    }
+
+
     // try detect the moment user enters
-    function handDetect() {
+    const handDetect = () => {
         detected = false;
         handStart(handsfree);
-        setTimeout(() => {
-            let detectHand = window.setInterval(function () {
-                if (handsfree.data.hands.pointer[0].isVisible) {
+        let detectHand = window.setInterval(function () {
+            handsfree.data.hands.pointer.forEach((item, idx) => {
+                if (item.isVisible) {
                     console.log("Hand Detected!");
+                    console.log(idx);
                     detected = true;
-                    // setReady(true); // still not working...........
-                    // setAlert("Hand(s) Detected");
+                    setIsDetected(!isDetected);
                 }
-
-                if (detected) clearInterval(detectHand);
-            }, 500)
-        }, 1500); 
+            })
+            
+            
+            if (detected) clearInterval(detectHand);
+        }, 500)
     }
 
     // useEffect(() => {
-    //     if (setReady) {
-    //         setAlert("Hand(s) Detected");
-    //     }
-    // }, [setReady])
+    //     if (isDetected) clearInterval(detectHand);
+    // }, [isDetected])
 
     function handPose() {
         // need to be fixed. detect which hand is using at the beginning
@@ -377,6 +382,7 @@ function GamePage() {
 
     function handMoveSnake() {
         handDir = 2;
+        console.log(isDetected);
         if (!multi) {
             return window.setInterval(function () {
                 handPose();
@@ -418,52 +424,53 @@ function GamePage() {
     
             // }, SPEED);
             
-        } else {
-            return window.setInterval(function () {
-                handsfree.data.hands.pointer.forEach((item, idx) => {
-                    console.log(item);
-                    if (item.isVisible) {
-                        let playerScreen = 0;
-                        coordinate[0] = item.x;
-                        coordinate[1] = item.y;
-                        
-                        if (idx === 0 || idx === 1) {
-                            playerScreen = window.screen.width / 4;
-                        } else if (idx === 2 || idx === 3) {
-                            playerScreen = window.screen.width / 4 * 3;
-                        }
-                        console.log(playerScreen);
-                        if (Math.abs(coordinate[0] - playerScreen) >= Math.abs(coordinate[1] - 300)) {
-                                if (coordinate[0] > (playerScreen) && handDir !== 3) {
-                                    setDir(DIRECTIONS[39]);
-                                    handDir = 4;
-                                } else if (coordinate[0] < (playerScreen) && handDir !== 4) {
-                                    setDir(DIRECTIONS[37]);
-                                    handDir = 3;
-                                } else {
-                                    console.log("Not moving");
-                                }
-                                
-                            } else {
-                                if (coordinate[1] > 300 && handDir !== 2) {
-                                    setDir(DIRECTIONS[40])
-                                    handDir = 1;
-                                } else if (coordinate[1] < 300 && handDir !== 1) {
-                                    setDir(DIRECTIONS[38])
-                                    handDir = 2;
-                                } else {
-                                    console.log("Not moving");
-                                }
-                                
-                            }
-                    } else {
-                        console.log("..");
-                    }
-                    
-                });
-
-            }, SPEED)
         }
+        // else {
+        //     return window.setInterval(function () {
+        //         handsfree.data.hands.pointer.forEach((item, idx) => {
+        //             console.log(item);
+        //             if (item.isVisible) {
+        //                 let playerScreen = 0;
+        //                 coordinate[0] = item.x;
+        //                 coordinate[1] = item.y;
+                        
+        //                 if (idx === 0 || idx === 1) {
+        //                     playerScreen = window.screen.width / 4;
+        //                 } else if (idx === 2 || idx === 3) {
+        //                     playerScreen = window.screen.width / 4 * 3;
+        //                 }
+        //                 console.log(playerScreen);
+        //                 if (Math.abs(coordinate[0] - playerScreen) >= Math.abs(coordinate[1] - 300)) {
+        //                         if (coordinate[0] > (playerScreen) && handDir !== 3) {
+        //                             setDir(DIRECTIONS[39]);
+        //                             handDir = 4;
+        //                         } else if (coordinate[0] < (playerScreen) && handDir !== 4) {
+        //                             setDir(DIRECTIONS[37]);
+        //                             handDir = 3;
+        //                         } else {
+        //                             console.log("Not moving");
+        //                         }
+                                
+        //                     } else {
+        //                         if (coordinate[1] > 300 && handDir !== 2) {
+        //                             setDir(DIRECTIONS[40])
+        //                             handDir = 1;
+        //                         } else if (coordinate[1] < 300 && handDir !== 1) {
+        //                             setDir(DIRECTIONS[38])
+        //                             handDir = 2;
+        //                         } else {
+        //                             console.log("Not moving");
+        //                         }
+                                
+        //                     }
+        //             } else {
+        //                 console.log("..");
+        //             }
+                    
+        //         });
+
+        //     }, SPEED)
+        // }
 
     }
 
@@ -585,18 +592,22 @@ function GamePage() {
         if (gameMode === "regular_mode_single") {
         setHandMode(false);
         setMulti(false);
-    } else if (gameMode === "regular_mode_multi") {
-        setHandMode(false);
-        setMulti(true);
-    } else if (gameMode === "hand_mode_single") {
-        setHandMode(true);
-        setMulti(false); 
-        // try detect the moment user enters.
-    } else if (gameMode === "hand_mode_multi") {
-        setHandMode(true);
-        setMulti(true);
-    }
-    }, [gameMode, detected])
+
+        } else if (gameMode === "regular_mode_multi") {
+            setHandMode(false);
+            setMulti(true);
+    
+        } else if (gameMode === "hand_mode_single") {
+            setHandMode(true);
+            setMulti(false);
+
+            // try detect the moment user enters.
+        } else if (gameMode === "hand_mode_multi") {
+            setHandMode(true);
+            setMulti(true);
+
+        }
+    }, [gameMode])
 
     // trigger whenever snake, apple or end of the game state has been updated
     useEffect(() => {
@@ -703,7 +714,7 @@ function GamePage() {
                             <rect x="0" y="0" fill="none" width="100%" height="100%"/>
                         </svg>
                     </button>
-                    <button className="button" onClick={startGameHand}>
+                        <button className="button" onClick={startGameHand}>
                         <span>Start Game</span>
                         <img src={start} alt="start" />
                         <svg>
