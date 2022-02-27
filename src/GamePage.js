@@ -513,8 +513,10 @@ function GamePage() {
         // setMode(true);
     }
 
-    const test = () => {
-        handDetect().then(() => {startGameHand()});
+    const handleStart = () => {
+        handDetect()
+            .then(()=> {setAlert("Hand(s) Detected")})
+            .then(() => { startGameHand() });
     }
 
     const moveSnake = ({ keyCode }) => {
@@ -719,14 +721,14 @@ function GamePage() {
                 {handMode ? 
                     <>
                     
-                    <button className="button" onClick={handDetect}>
+                    {/* <button className="button" onClick={handDetect}>
                         <span>Hand Detect</span>
                         <img src={detect} alt="detect" />
                         <svg>
                             <rect x="0" y="0" fill="none" width="100%" height="100%"/>
                         </svg>
-                    </button>
-                        <button className="button" onClick={test}>
+                    </button> */}
+                        <button className="button" onClick={handleStart}>
                         <span>Start Game</span>
                         <img src={start} alt="start" />
                         <svg>
