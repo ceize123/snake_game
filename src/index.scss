@@ -74,6 +74,29 @@ i {
     color: $primary;
 }
 
+// background effect
+.color {
+    display:block;
+    width:0;
+    height:0;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    position:absolute;
+    transition:0.8s ease;
+    border-radius:50%;
+    background-color:$info;
+    transition-delay:(0.5);
+    z-index: 999;
+}
+
+.expanded {
+    width:200%;
+    padding-bottom:200%;
+    height:auto; 
+
+}
+
 /* Home page starts */
 .homeSection {
     .title {margin-bottom: 30px;}
@@ -81,6 +104,34 @@ i {
     
     .buttonBlock {
         position: relative;
+        .button:after {
+            content: "";
+            display: block;
+            position: absolute;
+            border-radius: 10px;
+            left: 0;
+            top:0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: all 0.5s;
+            box-shadow: rgba(242, 24, 118, 0.4) 0 0 5px 5px, rgba(242, 24, 118, 0.3)0 0 10px 10px, rgba(242, 24, 118, 0.2)0 0 15px 15px, rgba(242, 24, 118, 0.1)0 0 20px 20px, rgba(242, 24, 118, 0.05)0 0 25px 25px;
+        }
+
+        .button:active:after {
+            box-shadow: 0 0 0 0 white;
+            position: absolute;
+            border-radius: 10px;
+            left: 0;
+            top:0;
+            opacity: 1;
+            transition: 0s;
+        }
+
+        .button:active {
+            top: 1px;
+        }
+
         .returnMode {
             position: absolute;
             bottom: -40px;
@@ -129,27 +180,6 @@ i {
         right: 0;
     }
 
-    // background effect
-    .color {
-        display:block;
-        width:0;
-        height:0;
-        left:50%;
-        top:50%;
-        transform:translate(-50%,-50%);
-        position:absolute;
-        transition:0.8s ease;
-        border-radius:50%;
-        background-color:$info;
-        transition-delay:(0.5);
-    }
-
-    .expanded {
-        width:200%;
-        padding-bottom:200%;
-        height:auto; 
-
-    }
 
 }
 /* Home page ends */

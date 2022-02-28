@@ -11186,6 +11186,27 @@ i {
   color: #F21876;
 }
 
+.color {
+  display: block;
+  width: 0;
+  height: 0;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  transition: 0.8s ease;
+  border-radius: 50%;
+  background-color: #057068;
+  transition-delay: 0.5;
+  z-index: 999;
+}
+
+.expanded {
+  width: 200%;
+  padding-bottom: 200%;
+  height: auto;
+}
+
 /* Home page starts */
 .homeSection .title {
   margin-bottom: 30px;
@@ -11195,6 +11216,31 @@ i {
 }
 .homeSection .buttonBlock {
   position: relative;
+}
+.homeSection .buttonBlock .button:after {
+  content: "";
+  display: block;
+  position: absolute;
+  border-radius: 10px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: all 0.5s;
+  box-shadow: rgba(242, 24, 118, 0.4) 0 0 5px 5px, rgba(242, 24, 118, 0.3) 0 0 10px 10px, rgba(242, 24, 118, 0.2) 0 0 15px 15px, rgba(242, 24, 118, 0.1) 0 0 20px 20px, rgba(242, 24, 118, 0.05) 0 0 25px 25px;
+}
+.homeSection .buttonBlock .button:active:after {
+  box-shadow: 0 0 0 0 white;
+  position: absolute;
+  border-radius: 10px;
+  left: 0;
+  top: 0;
+  opacity: 1;
+  transition: 0s;
+}
+.homeSection .buttonBlock .button:active {
+  top: 1px;
 }
 .homeSection .buttonBlock .returnMode {
   position: absolute;
@@ -11234,24 +11280,6 @@ i {
 .homeSection .snakeBottom {
   bottom: 0;
   right: 0;
-}
-.homeSection .color {
-  display: block;
-  width: 0;
-  height: 0;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  position: absolute;
-  transition: 0.8s ease;
-  border-radius: 50%;
-  background-color: #057068;
-  transition-delay: 0.5;
-}
-.homeSection .expanded {
-  width: 200%;
-  padding-bottom: 200%;
-  height: auto;
 }
 
 /* Home page ends */

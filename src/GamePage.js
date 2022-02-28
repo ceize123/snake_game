@@ -27,9 +27,9 @@ function GamePage() {
     const { gameMode } = useParams(); // should be same as the param in App.js
     const navigate = useNavigate();
 
+    const [enterEffect, setEnterEffect] = useState("color expanded");
     const [handMode, setHandMode] = useState();
     const [multi, setMulti] = useState();
-    // const [isDisabled, setIsDisabled] = useState(true);
     const [alert, setAlert] = useState("Please press the Detect Button and put your hands up");
     // const [isDetected, setIsDetected] = useState(false);
     const [snake, setSnake] = useState(SNAKE_START);
@@ -390,7 +390,7 @@ function GamePage() {
             return window.setInterval(function () {
                 handPose();
     
-            }, SPEED);
+            }, 100);
             // return window.setInterval(function () {
                 
             //     if (handsfree.data.hands.pointer[0].isVisible) {
@@ -616,6 +616,8 @@ function GamePage() {
     }
 
     useEffect(() => {
+        setTimeout(() => setEnterEffect("color"), 100)
+        
         if (gameMode === "regular_mode_single") {
         setHandMode(false);
         setMulti(false);
@@ -682,6 +684,7 @@ function GamePage() {
 
     return (
         <div className="gameSection mx-3">
+            <span className={enterEffect} data-value="1"></span>
             <img src={rec} alt="rectangle" />
             {!handMode ?
                 <div role="button" tabIndex="0" onKeyDown={e => moveSnake(e)}>

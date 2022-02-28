@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import title from './img/title.png';
 import snake_1 from './img/snake_1.png';
 import snake_2 from './img/snake_2.png';
@@ -12,6 +11,7 @@ function Homepage() {
     const [content, setContent] = useState("");
     const [content2, setContent2] = useState("");
     const [modeSelected, setModeSelected] = useState("");
+    const [enterEffect, setEnterEffect] = useState("color");
     const navigate = useNavigate();
 
     let initialTxt = "Regular Mode";
@@ -21,12 +21,14 @@ function Homepage() {
 
     const handleClick = (mode) => {
         if (modeSelected === "") {
-            setModeSelected(mode);
-            if (mode === "regular_mode") {
-                setContent("bi bi-person-fill")
-            } else {
-                setContent2("bi bi-people-fill")
-            }
+            setTimeout(() => {
+                setModeSelected(mode);
+                if (mode === "regular_mode") {
+                    setContent("bi bi-person-fill")
+                } else {
+                    setContent2("bi bi-people-fill")
+                }
+            }, 600)
         } else {
             setModeSelected("");
             setContent("")
@@ -35,7 +37,8 @@ function Homepage() {
     }
 
     const handleNavigate = (link) => {
-        navigate(link);
+        setEnterEffect("color expanded");
+        setTimeout(() => navigate(link), 500);
     }
     
     return (
@@ -47,7 +50,7 @@ function Homepage() {
                 {modeSelected === "" ?
                 <>
                 <p className="text-primary">Select the mode</p>
-                <div className="d-flex">
+                <div className="d-flex buttonBlock">
                     <button className="d-block text-center button"
                         onMouseOver={() => setContent(keyboard)}
                         onMouseLeave={() => setContent("")}
@@ -95,7 +98,7 @@ function Homepage() {
                 
                 </>
                 }
-                <span className="color" data-value="1"></span>
+                <span className={enterEffect} data-value="1"></span>
             </div>
         </div>
     )
