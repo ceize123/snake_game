@@ -309,40 +309,34 @@ function GamePage() {
         //         indexPose = handsfree.model.hands.getGesture()[handNum].pose[1][2];
         //     }
         // })
-        // let result = 0;
 
         thumbLandmark = handsfree.data.hands.landmarks[handNum][4].y; // 4 = Thumb_tip
         indexLandmark = handsfree.data.hands.landmarks[handNum][7].y; // 7 = Index_finger_dip,
         middleLandmark = handsfree.data.hands.landmarks[handNum][12].y; // 12 = Middle_finger_tip
         pinkyLandmark = handsfree.data.hands.landmarks[handNum][19].y; // 19 = Pinky_dip
-        console.log("hand num: "+ hand);
 
         
         if (handsfree.model.hands.getGesture()[handNum].name === "vertical") {
             if (indexPose === "Vertical Up" && hand !== 1) {
                 console.log("up");
                 (num === 1 ? setDir(DIRECTIONS[38]) : setDir2(DIRECTIONS2[87]));
-                hand = 2;
-                // result = 2;
+                (num === 1 ? handDir = 2 : handDir2 = 2);
             } else if ((indexPose === "Vertical Down" ||
                         indexPose.includes("Diagonal Down")) && hand !== 2) {
                 console.log("down");
                 (num === 1 ? setDir(DIRECTIONS[40]) : setDir2(DIRECTIONS2[83]));
-                hand = 1;
-                // result = 1;
+                (num === 1 ? handDir = 1 : handDir2 = 1);
             }
         } else if (handsfree.model.hands.getGesture()[handNum].name === "horizontal") {
             if (indexPose === "Horizontal Left" && hand !== 3) {
                 console.log("right");
                 (num === 1 ? setDir(DIRECTIONS[39]) : setDir2(DIRECTIONS2[68]));
-                hand = 4;
-                // result = 4;
+                (num === 1 ? handDir = 4 : handDir2 = 4);
             } else if ((indexPose === "Horizontal Right" ||
                         indexPose === "Diagonal Up Right") && hand !== 4) {
                 console.log("left");
                 (num === 1 ? setDir(DIRECTIONS[37]) : setDir2(DIRECTIONS2[65]));
-                hand = 3;
-                // result = 3;
+                (num === 1 ? handDir = 3 : handDir2 = 3);
             }
         } else {
             if ((indexPose === "Horizontal Right" ||
@@ -350,23 +344,20 @@ function GamePage() {
                         && hand !== 4) {
                     console.log("left");
                     (num === 1 ? setDir(DIRECTIONS[37]) : setDir2(DIRECTIONS2[65]));
-                    hand = 3;
-                    // result = 3;
+                    (num === 1 ? handDir = 3 : handDir2 = 3);
             } else if (indexPose.includes("Diagonal Up")) {
                 if (thumbLandmark < pinkyLandmark) {
                     if (indexLandmark > middleLandmark) {
                         if (hand !== 1) {
                             console.log("1up");
                             (num === 1 ? setDir(DIRECTIONS[38]) : setDir2(DIRECTIONS2[87]));
-                            hand = 2;
-                            // result = 2;
+                            (num === 1 ? handDir = 2 : handDir2 = 2);
                         }
                     } else {
                         if (hand !== 3) {
                             console.log("1right");
                             (num === 1 ? setDir(DIRECTIONS[39]) : setDir2(DIRECTIONS2[68]));
-                            hand = 4;
-                            // result = 4;
+                            (num === 1 ? handDir = 4 : handDir2 = 4);
                         }
                     }
                 } else {
@@ -374,15 +365,13 @@ function GamePage() {
                         if (hand !== 1) {
                             console.log("1up");
                             (num === 1 ? setDir(DIRECTIONS[38]) : setDir2(DIRECTIONS2[87]));
-                            hand = 2;
-                            // result = 2;
+                            (num === 1 ? handDir = 2 : handDir2 = 2);
                         }
                     } else {
                         if (hand !== 3) {
                             console.log("2right");
                             (num === 1 ? setDir(DIRECTIONS[39]) : setDir2(DIRECTIONS2[68]));
-                            hand = 4;
-                            // result = 4;
+                            (num === 1 ? handDir = 4 : handDir2 = 4);
                         }
                     }
                 }
@@ -390,11 +379,9 @@ function GamePage() {
                         indexPose.includes("Diagonal Down")) && hand !== 2) {
                     console.log("down");
                     (num === 1 ? setDir(DIRECTIONS[40]) : setDir2(DIRECTIONS2[83]));
-                    hand = 1;
-                    // result = 1;
+                    (num === 1 ? handDir = 1 : handDir2 = 1);
             }
         }
-        // return result;
     }
 
     function handMoveSnake() {
