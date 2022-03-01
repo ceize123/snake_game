@@ -54,7 +54,7 @@ const WebcamCapture = (prop) => {
 
 
   return (
-    <div className="webcam d-flex" ref={webcamBlock} style={{ border: "3px solid #F3B707"}}>
+    <div className="webcam d-flex mt-3" ref={webcamBlock} style={{ border: "3px solid #F3B707"}}>
     
         <Webcam
         audio={false}

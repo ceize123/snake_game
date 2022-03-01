@@ -27,17 +27,17 @@ function GamePage() {
     const { gameMode } = useParams(); // should be same as the param in App.js
     const navigate = useNavigate();
 
-    const [enterEffect, setEnterEffect] = useState("color expanded");
+    const [opacity, setOpacity] = useState(0);
     const [handMode, setHandMode] = useState();
     const [multi, setMulti] = useState();
-    const [alert, setAlert] = useState("Please press the Detect Button and put your hands up");
+    const [alert, setAlert] = useState("Please press the Start Game button and put your hands up");
+    const [countdown, setCountDown] = useState("");
     // const [isDetected, setIsDetected] = useState(false);
     const [snake, setSnake] = useState(SNAKE_START);
     const [apple, setApple] = useState(APPLE_START);
     const [dir, setDir] = useState([0, -1]); // going up
     const [speed, setSpeed] = useState(null);
     const [gameOver, setGameOver] = useState(false);
-    const [interval, setInterval] = useState(null);
     
     // let detected = false;
 
@@ -264,29 +264,29 @@ function GamePage() {
     function handStart(handsfree) {
         handsfree.enablePlugins('browser');
         handsfree.start();
-        
     }
 
 
     // try detect the moment user enters
     const handDetect = async () => {
         return new Promise((resolve, reject) => {
+            console.log(handsfree.isLooping);
             let detected = false;
             handStart(handsfree);
             const detectHand = window.setInterval(async () => {
-                handsfree.data.hands.pointer.forEach((item) => {
+                handsfree.data.hands.pointer.forEach((item, idx) => {
                     if (item.isVisible) {
                         console.log("Hand Detected!");
+                        console.log(idx);
                         detected = true;
                     }
                 })
-                
+            
                 if (await detected) {
                     resolve();
                     clearInterval(detectHand);
                 }
             }, 500)
-        
         })
     }
 
@@ -390,7 +390,7 @@ function GamePage() {
             return window.setInterval(function () {
                 handPose();
     
-            }, 100);
+            }, SPEED);
             // return window.setInterval(function () {
                 
             //     if (handsfree.data.hands.pointer[0].isVisible) {
@@ -480,14 +480,16 @@ function GamePage() {
     
 
     const startGame = () => {
-        
+        count();
         setSnake(SNAKE_START);
         setApple(APPLE_START);
         setDir([0, -1]);
         setGameOver(false);
-        // handStart(handsfree);
-        setSpeed(SPEED);
-        // setMode(false);
+        setTimeout(() => {
+            setSpeed(SPEED / 2);
+            document.getElementById('canvas').focus();
+            setCountDown("")
+        }, 4001)
     }
 
     const startGameHand = async () => {
@@ -496,39 +498,41 @@ function GamePage() {
             setApple(APPLE_START);
             setDir([0, -1]);
             setGameOver(false);
-            // handStart(handsfree);
             setSpeed(SPEED);
-            setInterval(handMoveSnake);
+            handMoveSnake();
         })
-        // setMode(false);
     }
 
     const endGame = () => {
         setSpeed(null);
         setGameOver(true);
+        // handsfree.pause();
+        // if (handsfree.isLooping !== undefined) {
         handsfree.stop();
-        if (interval !== null) {
-            clearInterval(interval);
-        }
-        // setMode(true);
+        // }
+        console.log("end");
+    }
+
+    const count = () => {
+        let count = 4;
+        let countdown = window.setInterval(() => {
+            if (count > 1) setCountDown(--count)
+            if (count === 0) clearInterval(countdown)
+        }, 1000)
     }
 
     const handleStart = () => {
-        let count = 3;
+        // let count = 3;
         setAlert("Detecting...");
         handDetect()
             .then(() => { setAlert("Hand(s) Detected") })
-            .then(() => {
-                let countdown = window.setInterval(() =>{
-                    if (count === 0) clearInterval(countdown)
-                    setAlert(count--)
-                }, 1000)
-            })
+            .then(() => { setTimeout(() => setAlert(""), 1000) })
+            .then(() => { count() })
             .then(() => {
                 setTimeout(() => {
-                    setAlert("")
+                    setCountDown("")
                     startGameHand()
-                }, 4000)
+                }, 4001)
             });
     }
 
@@ -616,8 +620,9 @@ function GamePage() {
     }
 
     useEffect(() => {
-        setTimeout(() => setEnterEffect("color"), 100)
-        
+        setTimeout(() => {
+            setOpacity(1)
+        }, 100)
         if (gameMode === "regular_mode_single") {
         setHandMode(false);
         setMulti(false);
@@ -646,6 +651,8 @@ function GamePage() {
         context.setTransform(SCALE, 0, 0, SCALE, 0, 0);
         // clear canvas before we start drawing a thing
         context.clearRect(0, 0, CANVAS_SIZE[0], CANVAS_SIZE[1]);
+        // context.canvas.width  = (window.innerWidth) * 0.98;
+        // context.canvas.height = (window.innerHeight) * 0.68;
         context.fillStyle = "pink";
         snake.forEach(([x, y]) => context.fillRect(x, y, 1, 1)) // set x and y values to 1
 
@@ -660,7 +667,10 @@ function GamePage() {
         if (e.target.checked) {
             navigate(`/hand_mode_${!multi ? "single": "multi"}`);
         } else {
-            navigate(`/regular_mode_${!multi ? "single": "multi"}`);
+            navigate(`/regular_mode_${!multi ? "single" : "multi"}`);
+            if (handsfree.isLooping !== undefined) {
+                handsfree.stop();
+            }
         }
         
     }
@@ -683,114 +693,84 @@ function GamePage() {
     }
 
     return (
-        <div className="gameSection mx-3">
-            <span className={enterEffect} data-value="1"></span>
-            <img src={rec} alt="rectangle" />
-            {!handMode ?
-                <div role="button" tabIndex="0" onKeyDown={e => moveSnake(e)}>
-                    <canvas
-                        style={{ border: "3px solid #F3B707"}}
-                        ref={ canvasRef }
-                        width={`${CANVAS_SIZE[0]}px`}
-                        height={`${CANVAS_SIZE[1]}px`}
-                    />
-                    {gameOver && <div>GAME OVER!</div>}
-                    <button onClick={startGame}>Start Game</button>
-                </div> :
-                <div>
-                    <canvas
-                        style={{ border: "3px solid #F3B707"}}
-                        ref={ canvasRef }
-                        width={`${CANVAS_SIZE[0]}px`}
-                        height={`${CANVAS_SIZE[1]}px`}
-                    />
-                    <p className="alert">{alert}</p>
-                    {gameOver && <div>GAME OVER!</div>}
-                    
-                    {/* <WebcamCapture isMulti={multi}/>  */}
-                </div>
-            }    
-            <div className="d-flex justify-content-end">
+        <div>
+            <div className="gameSection" style={{opacity : opacity}}>
+                {/* <span className={enterEffect} data-value="1"></span> */}
                 <img src={rec} alt="rectangle" />
-            </div>
-           <div className="d-flex gameSet justify-content-between mt-3">
-                <div className="optionSection">
-                    <img className="title d-block" src={title_s} alt="Snake Game" />
-                    <div className="d-flex">
-                        <p>Regular</p>
-                        <p>Hand</p>
+                {!handMode ?
+                    <div id="canvas" role="button" tabIndex="0" onKeyDown={e => moveSnake(e)}>
+                        <canvas
+                            style={{ border: "3px solid #F3B707"}}
+                            ref={ canvasRef }
+                            width={`${CANVAS_SIZE[0]}px`}
+                            height={`${CANVAS_SIZE[1]}px`}
+                        />
+                        <p className="alert countdown">{countdown}</p>
+                        {/* {gameOver && <div>GAME OVER!</div>} */}
+                        {/* <button onClick={startGame}>Start Game</button> */}
+                    </div> :
+                    <div>
+                        <canvas
+                            style={{ border: "3px solid #F3B707"}}
+                            ref={ canvasRef }
+                            width={`${CANVAS_SIZE[0]}px`}
+                            height={`${CANVAS_SIZE[1]}px`}
+                        />
+                        <p className="alert">{alert}</p>
+                        <p className="alert countdown">{countdown}</p>
+                        {/* {gameOver && <div>GAME OVER!</div>} */}
+                        
+                        {/* <WebcamCapture isMulti={multi}/>  */}
+                        
                     </div>
-                    <label className="switch">
-                        <input type="checkbox" defaultChecked={handMode} onClick={(e)=>{handleGameMode(e) }}/>
-                        <span className="slider round"></span>
-                    </label>
-                    <div className="d-flex">
-                        <p>Single Player</p>
-                        <p>Two Players</p>
-                    </div>
-                    <label className="switch">
-                        <input type="checkbox" defaultChecked={multi} onClick={(e)=>{handlePlayers(e) }}/>
-                        <span className="slider round"></span>
-                    </label>
+                }    
+                <div className="d-flex justify-content-end">
+                    <img src={rec} alt="rectangle" />
                 </div>
-                <div className="mt-5 buttonBlock">
-                {handMode ? 
-                    <>
-                    
-                    {/* <button className="button" onClick={handDetect}>
-                        <span>Hand Detect</span>
-                        <img src={detect} alt="detect" />
-                        <svg>
-                            <rect x="0" y="0" fill="none" width="100%" height="100%"/>
-                        </svg>
-                    </button> */}
-                        <button className="button" onClick={handleStart}>
-                        <span>Start Game</span>
-                        <img src={start} alt="start" />
-                        <svg>
-                            <rect x="0" y="0" fill="none" width="100%" height="100%"/>
-                        </svg>
-                    </button>    
-                            
-                    {/* not working. Bugs... */}
-                    {/* <button className="button" onClick={handDetect}
-                        onMouseOver={() => setContent(detect)}
-                        onMouseLeave={() => setContent("")}>
-                    <svg>
-                        <rect x="0" y="0" fill="none" width="100%" height="100%"/>
-                    </svg>
-                    {content ? <img src={content} alt="detect" /> : "Hand Detect"}
-                    </button>
-                    <button className="button" onClick={startGameHand}
-                        onMouseOver={() => mouseOverStart()}
-                        onMouseLeave={() => setContent2("")}
-                        >
-                        {content2 ? 
+            <div className="d-flex gameSet justify-content-between">
+                    <div className="optionSection">
+                        <img className="title d-block" src={title_s} alt="Snake Game" />
+                        <div className="d-flex">
+                            <p className={!handMode ? "isActive" : ""}>Regular</p>
+                            <p className={handMode ? "isActive" : ""}>Hand</p>
+                        </div>
+                        <label className="switch">
+                            <input type="checkbox" defaultChecked={handMode} onClick={(e)=>{handleGameMode(e) }}/>
+                            <span className="slider round"></span>
+                        </label>
+                        <div className="d-flex">
+                            <p className={!multi ? "isActive" : ""}>Single Player</p>
+                            <p className={multi ? "isActive" : ""}>Two Players</p>
+                        </div>
+                        <label className="switch">
+                            <input type="checkbox" defaultChecked={multi} onClick={(e)=>{handlePlayers(e) }}/>
+                            <span className="slider round"></span>
+                        </label>
+                    </div>
+                    <div className="mt-5 buttonBlock">
+                    {handMode ? 
                         <>
-                        <svg>
-                            <rect x="0" y="0" fill="none" width="100%" height="100%"/>
-                        </svg>
-                        <img src={content2} alt="start" />
-                        </>
-                         :
-                        "Start Game"
-                        }
-                    </button> */}
-                    </> :
-                    <button className="button" onClick={startGame}>
-                        <span>Start Game</span>
-                        <img src={start} alt="start" />
-                        <svg>
-                            <rect x="0" y="0" fill="none" width="100%" height="100%"/>
-                        </svg>
-                    </button>
-                }
+                        <button className="button" onClick={handleStart}>
+                            <span>Start Game</span>
+                            <img src={start} alt="start" />
+                            <svg>
+                                <rect x="0" y="0" fill="none" width="100%" height="100%"/>
+                            </svg>
+                        </button>    
+                        </> :
+                        <button className="button" onClick={startGame}>
+                            <span>Start Game</span>
+                            <img src={start} alt="start" />
+                            <svg>
+                                <rect x="0" y="0" fill="none" width="100%" height="100%"/>
+                            </svg>
+                        </button>
+                    }
+                    </div>
+                    {handMode && <WebcamCapture isMulti={multi}/>}
+                    
                 </div>
-                {handMode && <WebcamCapture isMulti={multi}/>}
-                
             </div>
-  
-            
         </div>
     )
 }
