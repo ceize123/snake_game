@@ -6,6 +6,8 @@ import Handsfree from 'handsfree';
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import UseInterval from './UseInterval';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 import {
     CANVAS_SIZE,
     SNAKE_START,
@@ -43,8 +45,10 @@ function GamePage() {
     const [dir2, setDir2] = useState([0, -1]); // going up
     const [speed, setSpeed] = useState(null);
     const [gameOver, setGameOver] = useState(true);
+    const [openSwal, setOpenSwal] = useState(false);
     
     // let detected = false;
+    
 
     let handDir = 0; // Don't know why const [dir, setDir] = useState([0, -1]); is not working in setInterval.
     let handDir2 = 0;
@@ -276,8 +280,8 @@ function GamePage() {
     // try detect the moment user enters
     const handDetect = async () => {
         return new Promise((resolve, reject) => {
-            console.log(handsfree.isLooping);
             let detected = false;
+            let count = 0;
             handStart(handsfree);
             const detectHand = window.setInterval(async () => {
                 handsfree.data.hands.pointer.forEach((item, idx) => {
@@ -287,12 +291,19 @@ function GamePage() {
                         detected = true;
                     }
                 })
-            
+                
                 if (await detected) {
                     resolve();
                     clearInterval(detectHand);
                 }
-            }, 500)
+
+                count++;
+                if (count === 5) {
+                    reject();
+                    setAlert("No detected!");
+                    clearInterval(detectHand);
+                }
+            }, 1000)
         })
     }
 
@@ -526,21 +537,8 @@ function GamePage() {
     const endGame = (count = 0) => {
         setSpeed(null);
         setGameOver(true);
-        switch (count) {
-            case 1:
-                setMsg("P2 win!");
-                break;
-            case 2:
-                setMsg("P1 win!");
-                break
-            case 3:
-                setMsg("Tie!");
-                break
-            default:
-                setMsg("Game Over!");
-                break;
-        }
-        // handsfree.stop();
+        handleSwal(count);
+
     }
 
     const count = () => {
@@ -553,6 +551,7 @@ function GamePage() {
 
     const handleStart = () => {
         setAlert("Detecting...");
+        setGameOver(false);
         handDetect()
             .then(() => { setAlert("Hand(s) Detected") })
             .then(() => { setTimeout(() => setAlert(""), 1000) })
@@ -707,14 +706,21 @@ function GamePage() {
     UseInterval(() => gameLoop(snake, snake2), speed);
 
     const handleGameMode = (e) => {
+        //
         if (e.target.checked) {
-            navigate(`/hand_mode_${!multi ? "single": "multi"}`);
+            setMulti(false);
+            navigate(`/hand_mode_single`);
+            
         } else {
             navigate(`/regular_mode_${!multi ? "single" : "multi"}`);
-            if (handsfree.isLooping !== undefined) {
-                handsfree.stop();
-            }
         }
+        //
+        // if (e.target.checked) {
+        //     navigate(`/hand_mode_${!multi ? "single" : "multi"}`);
+            
+        // } else {
+        //     navigate(`/regular_mode_${!multi ? "single" : "multi"}`);
+        // }
         setup();
     }
 
@@ -734,6 +740,66 @@ function GamePage() {
             }
         }
         setup();
+    }
+
+    const handleInProgress = () => {
+        const customSwal = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-info',
+        },
+        buttonsStyling: false
+        })
+        customSwal.fire({
+        icon: 'warning',
+        title: 'Hand-pose multi-player mode is in progress..',
+        })
+    }
+
+    const handleSwal = (count = 0) => {
+        // switch (count) {
+        //     case 1:
+        //         setMsg("P2 win!");
+        //         break;
+        //     case 2:
+        //         setMsg("P1 win!");
+        //         break
+        //     case 3:
+        //         setMsg("Tie!");
+        //         break
+        //     default:
+        //         setMsg("Game Over!");
+        //         break;
+        // }
+        let winP = "";
+        switch (count) {
+            case 1:
+                winP = "P2 win!";
+                break;
+            case 2:
+                winP = "P1 win!";
+                break;
+            case 3:
+                winP = "Tie!";
+                break;
+            default:
+                break;
+        }
+
+        const MySwal = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-info',
+        },
+        buttonsStyling: false
+        })
+
+        MySwal.fire({
+            icon: 'error',
+            title: 'Game Over!',
+            text: winP,
+        }).then((result) => {
+        if (result.isConfirmed && handMode) {
+            handsfree.stop();
+        }})
     }
 
     return (
@@ -781,22 +847,34 @@ function GamePage() {
                         <label className="switch">
                             <input type="checkbox" defaultChecked={handMode}
                                 onClick={(e) => { handleGameMode(e) }} disabled={!gameOver}/>
-                            <span className="slider round"></span>
+                            <span className="slider round" disabled={!gameOver}></span>
                         </label>
                         <div className="d-flex">
                             <p className={!multi ? "isActive" : ""}>Single Player</p>
                             <p className={multi ? "isActive" : ""}>Two Players</p>
                         </div>
-                        <label className="switch">
-                            <input type="checkbox" defaultChecked={multi}
-                                onClick={(e) => { handlePlayers(e) }} disabled={!gameOver}/>
-                            <span className="slider round"></span>
-                        </label>
+                        {handMode ? 
+                            <>
+                                <label className="switch">
+                                    <input type="checkbox" checked={false}
+                                        onClick={(e) => { handleInProgress(e) }}/>
+                                    <span className="slider round"></span>
+                                </label>
+                            </> :
+                            <>
+                                <label className="switch">
+                                    <input type="checkbox" defaultChecked={multi}
+                                        onClick={(e) => { handlePlayers(e) }} disabled={!gameOver}/>
+                                    <span className="slider round" disabled={!gameOver}></span>
+                                </label>
+                            </>
+                        }
+                        
                     </div>
                     <div className="mt-5 buttonBlock">
                     {handMode ? 
                         <>
-                        <button className="button" onClick={handleStart}>
+                        <button className="button" onClick={() => handleStart()} disabled={!gameOver}>
                             <span>Start Game</span>
                             <img src={start} alt="start" />
                             <svg>
@@ -804,7 +882,7 @@ function GamePage() {
                             </svg>
                         </button>    
                         </> :
-                        <button className="button" onClick={startGame}>
+                        <button className="button" onClick={() => startGame()} disabled={!gameOver}>
                             <span>Start Game</span>
                             <img src={start} alt="start" />
                             <svg>

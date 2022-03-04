@@ -86,15 +86,26 @@ function Homepage() {
                             </svg>
                             {content ? <i className={content}></i> : initialTxt3}
                         </button>
-                        <button className="d-block text-center button"
-                            onMouseOver={() => setContent2("bi bi-people-fill")}
-                            onMouseLeave={() => setContent2("")}
-                            onClick={() =>  handleNavigate(`/${modeSelected}_multi`)}>
-                            <svg>
-                                <rect x="0" y="0" fill="none" width="100%" height="100%"/>
-                            </svg>
-                            {content2 ? <i className={content2}></i> : initialTxt4}
-                        </button>
+                        {modeSelected !== "hand_mode" ? 
+                            <>
+                                <button className="d-block text-center button"
+                                    onMouseOver={() => setContent2("bi bi-people-fill")}
+                                    onMouseLeave={() => setContent2("")}
+                                    onClick={() =>  handleNavigate(`/${modeSelected}_multi`)}>
+                                    <svg>
+                                        <rect x="0" y="0" fill="none" width="100%" height="100%"/>
+                                    </svg>
+                                    {content2 ? <i className={content2}></i> : initialTxt4}
+                                </button>
+                            </> :
+                            <>
+                              <button className="d-block text-center button"
+                                    disabled={true}>
+                                    In Progress
+                                </button>          
+                            </>
+                        }
+                        
                         <p className="returnMode" onClick={() => handleClick()}>Select the mode</p> 
                             
                     </div>
