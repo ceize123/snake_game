@@ -11226,6 +11226,10 @@ i {
   margin: auto auto;
 }
 
+.handsfree-pointer {
+  visibility: hidden;
+}
+
 /* Home page starts */
 .homeSection .title {
   margin-bottom: 30px;
