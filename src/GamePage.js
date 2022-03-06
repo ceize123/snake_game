@@ -799,6 +799,7 @@ function GamePage() {
         }).then((result) => {
         if (result.isConfirmed && handMode) {
             handsfree.stop();
+            // handsfree.stop();
         }})
     }
 
