@@ -798,7 +798,8 @@ function GamePage() {
             text: winP,
         }).then((result) => {
         if (result.isConfirmed && handMode) {
-            handsfree.stop(); 
+            handsfree.stop();
+            // handsfree.stop();
         }})
     }
 
