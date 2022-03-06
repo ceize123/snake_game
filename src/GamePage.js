@@ -7,7 +7,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import UseInterval from './UseInterval';
 import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 import {
     CANVAS_SIZE,
     SNAKE_START,
@@ -19,11 +18,6 @@ import {
     DIRECTIONS,
     DIRECTIONS2,
 } from './Constants';
-
-// function handStart(handsfree) {
-//     handsfree.enablePlugins('browser');
-//     handsfree.start();
-// }
 
 
 function GamePage() {
@@ -44,11 +38,7 @@ function GamePage() {
     const [dir, setDir] = useState([0, -1]); // going up
     const [dir2, setDir2] = useState([0, -1]); // going up
     const [speed, setSpeed] = useState(null);
-    const [gameOver, setGameOver] = useState(true);
-    const [openSwal, setOpenSwal] = useState(false);
-    
-    // let detected = false;
-    
+    const [gameOver, setGameOver] = useState(true);    
 
     let handDir = 0; // Don't know why const [dir, setDir] = useState([0, -1]); is not working in setInterval.
     let handDir2 = 0;
@@ -286,8 +276,6 @@ function GamePage() {
             const detectHand = window.setInterval(async () => {
                 handsfree.data.hands.pointer.forEach((item, idx) => {
                     if (item.isVisible) {
-                        console.log("Hand Detected!");
-                        console.log(idx);
                         detected = true;
                     }
                 })
@@ -309,18 +297,6 @@ function GamePage() {
     }
 
     function handPose(handNum, indexPose, thumbLandmark, indexLandmark, middleLandmark, pinkyLandmark, hand, num = 1) {
-        // let handNum = 0;
-        // let indexPose;
-        // let thumbLandmark;
-        // let indexLandmark;
-        // let middleLandmark;
-        // let pinkyLandmark;
-        // handsfree.data.hands.pointer.forEach((item, idx) => {
-        //     if (item.isVisible) {
-        //         handNum = idx;
-        //         indexPose = handsfree.model.hands.getGesture()[handNum].pose[1][2];
-        //     }
-        // })
 
         thumbLandmark = handsfree.data.hands.landmarks[handNum][4].y; // 4 = Thumb_tip
         indexLandmark = handsfree.data.hands.landmarks[handNum][7].y; // 7 = Index_finger_dip,
@@ -330,23 +306,19 @@ function GamePage() {
         
         if (handsfree.model.hands.getGesture()[handNum].name === "vertical") {
             if (indexPose === "Vertical Up" && hand !== 1) {
-                console.log("up");
                 (num === 1 ? setDir(DIRECTIONS[38]) : setDir2(DIRECTIONS2[87]));
                 (num === 1 ? handDir = 2 : handDir2 = 2);
             } else if ((indexPose === "Vertical Down" ||
                         indexPose.includes("Diagonal Down")) && hand !== 2) {
-                console.log("down");
                 (num === 1 ? setDir(DIRECTIONS[40]) : setDir2(DIRECTIONS2[83]));
                 (num === 1 ? handDir = 1 : handDir2 = 1);
             }
         } else if (handsfree.model.hands.getGesture()[handNum].name === "horizontal") {
             if (indexPose === "Horizontal Left" && hand !== 3) {
-                console.log("right");
                 (num === 1 ? setDir(DIRECTIONS[39]) : setDir2(DIRECTIONS2[68]));
                 (num === 1 ? handDir = 4 : handDir2 = 4);
             } else if ((indexPose === "Horizontal Right" ||
                         indexPose === "Diagonal Up Right") && hand !== 4) {
-                console.log("left");
                 (num === 1 ? setDir(DIRECTIONS[37]) : setDir2(DIRECTIONS2[65]));
                 (num === 1 ? handDir = 3 : handDir2 = 3);
             }
@@ -354,20 +326,17 @@ function GamePage() {
             if ((indexPose === "Horizontal Right" ||
                         indexPose.includes("Diagonal Up Right"))
                         && hand !== 4) {
-                    console.log("left");
                     (num === 1 ? setDir(DIRECTIONS[37]) : setDir2(DIRECTIONS2[65]));
                     (num === 1 ? handDir = 3 : handDir2 = 3);
             } else if (indexPose.includes("Diagonal Up")) {
                 if (thumbLandmark < pinkyLandmark) {
                     if (indexLandmark > middleLandmark) {
                         if (hand !== 1) {
-                            console.log("1up");
                             (num === 1 ? setDir(DIRECTIONS[38]) : setDir2(DIRECTIONS2[87]));
                             (num === 1 ? handDir = 2 : handDir2 = 2);
                         }
                     } else {
                         if (hand !== 3) {
-                            console.log("1right");
                             (num === 1 ? setDir(DIRECTIONS[39]) : setDir2(DIRECTIONS2[68]));
                             (num === 1 ? handDir = 4 : handDir2 = 4);
                         }
@@ -375,13 +344,11 @@ function GamePage() {
                 } else {
                     if (indexLandmark > middleLandmark) {
                         if (hand !== 1) {
-                            console.log("1up");
                             (num === 1 ? setDir(DIRECTIONS[38]) : setDir2(DIRECTIONS2[87]));
                             (num === 1 ? handDir = 2 : handDir2 = 2);
                         }
                     } else {
                         if (hand !== 3) {
-                            console.log("2right");
                             (num === 1 ? setDir(DIRECTIONS[39]) : setDir2(DIRECTIONS2[68]));
                             (num === 1 ? handDir = 4 : handDir2 = 4);
                         }
@@ -389,7 +356,6 @@ function GamePage() {
                 }
             } else if ((indexPose === "Vertical Down" ||
                         indexPose.includes("Diagonal Down")) && hand !== 2) {
-                    console.log("down");
                     (num === 1 ? setDir(DIRECTIONS[40]) : setDir2(DIRECTIONS2[83]));
                     (num === 1 ? handDir = 1 : handDir2 = 1);
             }
@@ -443,7 +409,6 @@ function GamePage() {
     }
 
     const moveSnake = ({ keyCode }) => {
-        // console.log(keyCode);// 87 83 65 68
         if (keyCode >= 37 && keyCode <= 40) {
             switch (keyCode) {
                 case 38:
@@ -623,7 +588,6 @@ function GamePage() {
         const newSnakeHead = [snakeCopy[0][0] + dir[0], snakeCopy[0][1] + dir[1]] // [x + dir, y + dir] = new value of the snake head
         snakeCopy.unshift(newSnakeHead);
         if (checkCollision(newSnakeHead)) {
-            console.log("2 win!");
             count++;
         }
         // only pop of the tail if the snake does not eat the apple
@@ -637,7 +601,6 @@ function GamePage() {
             const newSnakeHead2 = [snakeCopy2[0][0] + dir2[0], snakeCopy2[0][1] + dir2[1]] // [x + dir, y + dir] = new value of the snake head
             snakeCopy2.unshift(newSnakeHead2);
             if (checkCollision(newSnakeHead2)) {
-                console.log("1 win!");
                 count += 2;
             }
 
@@ -715,13 +678,7 @@ function GamePage() {
         } else {
             navigate(`/regular_mode_${!multi ? "single" : "multi"}`);
         }
-        //
-        // if (e.target.checked) {
-        //     navigate(`/hand_mode_${!multi ? "single" : "multi"}`);
-            
-        // } else {
-        //     navigate(`/regular_mode_${!multi ? "single" : "multi"}`);
-        // }
+
         setup();
     }
 
@@ -751,26 +708,12 @@ function GamePage() {
         buttonsStyling: false
         })
         customSwal.fire({
-        icon: 'warning',
         title: 'Hand-pose multi-player mode is in progress..',
         })
     }
 
     const handleSwal = (count = 0) => {
-        // switch (count) {
-        //     case 1:
-        //         setMsg("P2 win!");
-        //         break;
-        //     case 2:
-        //         setMsg("P1 win!");
-        //         break
-        //     case 3:
-        //         setMsg("Tie!");
-        //         break
-        //     default:
-        //         setMsg("Game Over!");
-        //         break;
-        // }
+
         let winP = "";
         switch (count) {
             case 1:
@@ -794,13 +737,11 @@ function GamePage() {
         })
 
         MySwal.fire({
-            icon: 'error',
             title: 'Game Over!',
             text: winP,
         }).then((result) => {
         if (result.isConfirmed && handMode) {
             handsfree.stop();
-            // handsfree.stop();
         }})
     }
 
@@ -818,8 +759,7 @@ function GamePage() {
                             height={`${CANVAS_SIZE[1]}px`}
                         />
                         <p className="alert countdown">{msg}</p>
-                        {/* {gameOver && <div>GAME OVER!</div>} */}
-                        {/* <button onClick={startGame}>Start Game</button> */}
+
                     </div> :
                     <div>
                         <canvas
@@ -830,9 +770,6 @@ function GamePage() {
                         />
                         <p className="alert">{alert}</p>
                         <p className="alert countdown">{msg}</p>
-                        {/* {gameOver && <div>GAME OVER!</div>} */}
-                        
-                        {/* <WebcamCapture isMulti={multi}/>  */}
                         
                     </div>
                 }    
