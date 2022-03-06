@@ -301,6 +301,7 @@ function GamePage() {
                 if (count === 5) {
                     reject();
                     setAlert("No detected!");
+                    setGameOver(true);
                     clearInterval(detectHand);
                 }
             }, 1000)
