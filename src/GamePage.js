@@ -830,7 +830,7 @@ function GamePage() {
                         </button>
                     }
                     </div>
-                    {handMode && <WebcamCapture isMulti={multi}/>}
+                    <WebcamCapture isOn={!gameOver} hand={handMode}/>
                     
                 </div>
             </div>

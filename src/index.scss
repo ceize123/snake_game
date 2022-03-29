@@ -326,9 +326,6 @@ i {
 }
 /* Game section ends */
 
-
-
-
 .handsfree-canvas {
     width: 50% !important; 
 }
@@ -336,36 +333,9 @@ i {
 /* Webcam starts */
 
 .webcam {
-    video { 
-        max-width: 330px;
-        width: 20vw;
-    }
-
-    // .dot {
-    //   height: 5px;
-    //   width: 5px;
-    //   background-color: #bbb;
-    //   display: inline-block;
-    //   position: absolute;
-    // }
-    
-    // .dot::before,.dot::after{
-    //     content:'';
-    //     position:absolute;
-    //     background-color: #bbb;
-    // }
-    
-    // .dot:before{
-    //     left: -70px;
-    //     width: 140px;
-    //     height: 5px;
-    // }
-    // .dot:after{
-    //     top: -70px;
-    //     width: 5px;
-    //     height: 140px;
-    // }
+    max-width: 330px;
+    width: 20vw;
+    img {max-width: 100%;}
+    video { max-width: 100%;}
 }
-
-
 /* Webcam ends */
