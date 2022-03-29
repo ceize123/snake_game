@@ -11404,9 +11404,15 @@ i {
 }
 
 /* Webcam starts */
-.webcam video {
+.webcam {
   max-width: 330px;
   width: 20vw;
+}
+.webcam img {
+  max-width: 100%;
+}
+.webcam video {
+  max-width: 100%;
 }
 
 /* Webcam ends */
