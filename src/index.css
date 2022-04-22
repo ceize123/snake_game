@@ -11301,11 +11301,16 @@ i {
 }
 .gameSection .alert {
   position: absolute;
-  font-size: 18px;
+  font-size: 24px;
   color: #F21876;
   top: 50px;
   left: 50%;
   transform: translateX(-50%);
+}
+@media only screen and (max-width: 1200px) {
+  .gameSection .alert {
+    font-size: 18px;
+  }
 }
 .gameSection .countdown {
   font-size: 72px;
