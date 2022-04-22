@@ -15,7 +15,7 @@ function Homepage() {
     const [opacity, setOpacity] = useState(1);
     const navigate = useNavigate();
 
-    let initialTxt = "Regular Mode";
+    let initialTxt = "Keyboard Mode";
     let initialTxt2 = "Hand Mode";
     let initialTxt3 = "Single Player";
     let initialTxt4 = "Two Players";
