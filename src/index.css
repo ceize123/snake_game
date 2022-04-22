@@ -11318,6 +11318,7 @@ i {
 }
 .gameSection .gameSet .optionSection .title {
   margin-bottom: 15px;
+  cursor: pointer;
 }
 .gameSection .gameSet .optionSection p {
   font-size: 12px;

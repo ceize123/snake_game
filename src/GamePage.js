@@ -1,6 +1,7 @@
 import rec from './img/rec.png';
 import title_s from './img/title_s.png';
 import start from './img/start.png';
+import dog from './img/apple.png';
 import WebcamCapture from './WebcamCapture';
 import Handsfree from 'handsfree';
 import React, { useState, useRef, useEffect } from 'react';
@@ -645,27 +646,85 @@ function GamePage() {
     useEffect(() => {
         // get the context to be able to draw with this context on the canvas
         const context = canvasRef.current.getContext("2d");
+
         // set the scale each time to whatever we define in SCALE constant
         context.setTransform(SCALE, 0, 0, SCALE, 0, 0);
         // clear canvas before we start drawing a thing
         context.clearRect(0, 0, CANVAS_SIZE[0], CANVAS_SIZE[1]);
-        // context.canvas.width  = (window.innerWidth) * 0.98;
-        // context.canvas.height = (window.innerHeight) * 0.68;
-        context.fillStyle = "pink";
+
+        context.fillStyle = "purple";
         snake.forEach(([x, y]) => context.fillRect(x, y, 1, 1)) // set x and y values to 1
-        context.fillStyle = "green";
+
+        // function make_snakeHead(snakeNum) {
+        //     let base_image = new Image();
+        //     base_image.src = snakeHead;
+        //     base_image.onload = function () {
+        //         snakeNum.forEach(([x, y], idx) => {
+        //             if (idx === 0) {
+        //                 context.drawImage(base_image, x, y, 1, 1)
+        //             }
+        //         })
+        //     }
+        // }
+
+        // function make_snakeBody(snakeNum) {
+        //     let base_image = new Image();
+        //     base_image.src = snakeBody;
+        //     base_image.onload = function () {
+        //         snakeNum.forEach(([x, y], idx, ary) => {
+        //             if (idx !== 0 && idx !== ary.length - 1) {
+        //                 context.drawImage(base_image, x, y, 1, 1)
+        //             }
+        //         })
+        //     }
+        // }
+
+        // function make_snakeTail(snakeNum) {
+        //     let base_image = new Image();
+        //     base_image.src = snakeTail;
+        //     base_image.onload = function () {
+        //         snakeNum.forEach(([x, y], idx, ary) => {
+        //             if (idx === ary.length - 1) {
+        //                 context.drawImage(base_image, x, y, 1, 1)
+        //             }
+        //         })
+        //     }
+        // }
+        // make_snakeHead(snake);
+        // make_snakeBody(snake);
+        // make_snakeTail(snake);
+        
+        
+        
+        context.fillStyle = "orange";
         if (multi) {
+            // make_snakeHead(snake2);
+            // make_snakeBody(snake2);
+            // make_snakeTail(snake2);
             snake2.forEach(([x, y]) => context.fillRect(x, y, 1, 1)) // set x and y values to 1
         }
 
-        context.fillStyle = "lightblue";
-        context.fillRect(apple[0], apple[1], 1, 1);
-        context.fillStyle = "red";
+        // context.fillStyle = "lightblue";
+        // context.fillRect(apple[0], apple[1], 1, 1);
+        function make_apple(appleNum) {
+            let base_image = new Image();
+            base_image.src = dog;
+            base_image.onload = function () {
+                context.drawImage(base_image, appleNum[0], appleNum[1], 1, 1)
+            }
+        }
+        make_apple(apple);
+
+        
+        // context.fillStyle = "red";
         if (multi) {
-            context.fillRect(apple2[0], apple2[1], 1, 1);
+            // context.fillRect(apple2[0], apple2[1], 1, 1);
+            make_apple(apple2);
         }
 
     }, [snake, snake2, apple, apple2, gameOver, multi])
+
+    
 
     UseInterval(() => gameLoop(snake, snake2), speed);
 
@@ -708,7 +767,7 @@ function GamePage() {
         buttonsStyling: false
         })
         customSwal.fire({
-        title: 'Hand-pose multi-player mode is in progress..',
+        title: 'Multi-player mode is in progress..',
         })
     }
 
@@ -778,9 +837,11 @@ function GamePage() {
                 </div>
             <div className="d-flex gameSet justify-content-between">
                     <div className="optionSection">
-                        <img className="title d-block" src={title_s} alt="Snake Game" />
+                        <img className="title d-block" src={title_s} alt="Snake Game"
+                            onClick={() =>  navigate(`/`)}
+                        />
                         <div className="d-flex">
-                            <p className={!handMode ? "isActive" : ""}>Regular</p>
+                            <p className={!handMode ? "isActive" : ""}>Keyboard</p>
                             <p className={handMode ? "isActive" : ""}>Hand</p>
                         </div>
                         <label className="switch">

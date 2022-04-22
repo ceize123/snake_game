@@ -232,7 +232,10 @@ i {
         .optionSection {
             margin-left: 10px;
 
-            .title {margin-bottom: 15px;}
+            .title {
+                margin-bottom: 15px;
+                cursor: pointer;
+            }
 
             p {
                 font-size: 12px;
