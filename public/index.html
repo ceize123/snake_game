@@ -2,19 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="icon" href="%PUBLIC_URL%/snake.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
       content="Web site created using create-react-app"
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -28,7 +22,7 @@
     <!-- Include Handsfree.js -->
     <link rel="stylesheet" href="https://unpkg.com/handsfree@8.5.1/build/lib/assets/handsfree.css" />
     <script src="https://unpkg.com/handsfree@8.5.1/build/lib/handsfree.js"></script>
-    <title>React App</title>
+    <title>Motion Detecting Snake Game</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -45,68 +39,6 @@
     -->
     <!-- Instantiate and start it -->
     <script>
-        // let coordinate = [];
-        // let x = 0;
-        // let y = 0;
-        // const handsfree = new Handsfree({
-        //     // showDebug: true,
-        //     hands: {
-        //         enabled: true,
-        //         // The maximum number of hands to detect [0 - 4]
-        //         maxNumHands: 1,
-        //     },
-        // })
-
-        // handsfree.enablePlugins('browser')
-        // handsfree.start()
-        // setInterval(function () { 
-        //     if (handsfree.data.hands.landmarksVisible[0]) {
-        //     // if (handsfree.data.hands.pointer[0].isVisible) {
-
-        //         coordinate[0] = handsfree.data.hands.pointer[0].x;
-        //         coordinate[1] = handsfree.data.hands.pointer[0].y;
-        //         // console.log(coordinate);
-        //         if (Math.abs(coordinate[0] - x) >= Math.abs(coordinate[1] - y)) {
-        //             if (coordinate[0] - x > 50) {
-        //                 console.log("Right");
-        //             } else if (coordinate[0] - x < -50) {
-        //                 console.log("Left");
-        //             } else {
-        //                 console.log("Not moving");
-        //             }
-        //         } else {
-        //             if (coordinate[1] - y > 50) {
-        //                 console.log("Down");
-        //             } else if (coordinate[1] - y < -50) {
-        //                 console.log("Up");
-        //             } else {
-        //                 console.log("Not moving");
-        //             }
-        //         }
-        //         x = coordinate[0];
-        //         y = coordinate[1];
-                
-        //     } else {
-        //         console.log("..");
-        //     }
-
-
-        // }, 5000);
-        
-        // setInterval(function () {
-        //     if (handsfree.data.hands.pointer[0].isVisible) {
-        //         coordinate[0] = handsfree.data.hands.pointer[0].x;
-        //         coordinate[1] = handsfree.data.hands.pointer[0].y;
-        //         console.log(coordinate);
-
-        //     } else {
-        //         console.log("..");
-        //     }
-
-
-        // }, 5000);
-        
-
     </script>
   </body>
 </html>
